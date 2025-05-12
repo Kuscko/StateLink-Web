@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}My App{% endblock %}</title>
+    <!-- Add CSS and JS links here -->
+</head>
+<body>
+    <header>
+        <!-- Navigation menu goes here -->
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- Content of child templates will be inserted here -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <!-- Footer content goes here -->
+    </footer>
+</body>
+</html>
