@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">{{ service_name }} Request</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Business Information -->
+                    <div class="mb-4">
+                        <h4>Business Information</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Business Name:</strong> {{ business.name }}</p>
+                                <p><strong>Reference Number:</strong> {{ business.reference_number }}</p>
+                                <p><strong>State:</strong> {{ business.state_code }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Business Type:</strong> {{ business.get_business_type_display }}</p>
+                                <p><strong>Principal Address:</strong> {{ business.address }}{% if business.address2 %}, {{ business.address2 }}{% endif %}, {{ business.city }}, {{ business.state_code }} {{ business.zip_code }}</p>
+                                <p><strong>Registered Agent:</strong> {{ business.registered_agent }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        {% block service_form_fields %}{% endblock %}
+
+                        <div class="alert alert-info">
+                            <h5 class="alert-heading">Important Information</h5>
+                            <p class="mb-0">Please ensure all information provided is accurate. Any false or misleading information may result in delays or rejection of your request.</p>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'core:compliance_request' business.id %}" class="btn btn-secondary">Back to Services</a>
+                            <button type="submit" class="btn btn-primary">
+                                {% if pending_requests|length > 1 %}
+                                    Continue to Next Service
+                                {% else %}
+                                    Continue to Payment
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

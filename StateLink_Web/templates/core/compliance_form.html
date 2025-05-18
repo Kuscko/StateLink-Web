@@ -1,0 +1,305 @@
+{% extends 'base.html' %}
+
+{% block title %}Compliance Services Request - StateLink{% endblock %}
+
+{% block content %}
+{% if duplicate_services %}
+<div class="toast show align-items-center text-bg-warning border-0 mb-3" role="alert" aria-live="assertive" aria-atomic="true" style="position: absolute; top: 20px; right: 20px; z-index: 1055; min-width: 300px;">
+  <div class="d-flex">
+    <div class="toast-body">
+      <strong>Notice:</strong> The following service(s) have already been requested and cannot be added again:<br>
+      <ul class="mb-0">
+        {% for s in duplicate_services %}
+          <li>{{ s|cut:"_"|title }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>
+{% endif %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Left side: Service Information -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs" id="serviceInfo" role="tablist">
+                        {% if business.business_type == 'CORP' %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="bylaws-tab" data-bs-toggle="tab" data-bs-target="#bylaws" type="button" role="tab">
+                                Corporate Bylaws
+                            </button>
+                        </li>
+                        {% endif %}
+                        {% if business.business_type == 'LLC' %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {% if business.business_type == 'LLC' %}active{% endif %}" id="operating-tab" data-bs-toggle="tab" data-bs-target="#operating" type="button" role="tab">
+                                Operating Agreement
+                            </button>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {% if business.business_type != 'LLC' and business.business_type != 'CORP' %}active{% endif %}" id="ein-tab" data-bs-toggle="tab" data-bs-target="#ein" type="button" role="tab">
+                                Federal EIN
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="labor-tab" data-bs-toggle="tab" data-bs-target="#labor" type="button" role="tab">
+                                Labor Law Posters & Certificate
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="serviceInfoContent">
+                        {% if business.business_type == 'CORP' %}
+                        <!-- Corporate Bylaws Tab -->
+                        <div class="tab-pane fade show active" id="bylaws" role="tabpanel">
+                            <h4>The Legal Importance of Corporate Bylaws in North Carolina</h4>
+                            <p>In North Carolina you are legally expected to adopt them. Bylaws are the internal rules that govern how your corporation operates, including how decisions are made, how officers are appointed, and how shares are handled. Without them, your business is vulnerable to legal disputes, internal confusion, and compliance issues.</p>
+                            
+                            <h5 class="mt-3">Here's what's at stake:</h5>
+                            <ul>
+                                <li><strong>Legal Compliance:</strong> North Carolina law assumes your corporation has adopted bylaws. Without them, you may face challenges during audits, lawsuits, or when raising capital.</li>
+                                <li><strong>Internal Clarity & Control:</strong> Bylaws prevent power struggles and mismanagement by clearly defining roles, responsibilities, voting procedures, and dispute resolution.</li>
+                                <li><strong>Credibility:</strong> Banks, investors, and even vendors often ask for a copy of your bylaws before doing business. Without them, you appear disorganized and untrustworthy.</li>
+                            </ul>
+
+                            <div class="alert alert-primary">
+                                <strong>Get compliant. Stay protected.</strong> Select the Corporate Bylaws service to get started.
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if business.business_type == 'LLC' %}
+                        <!-- Operating Agreement Tab -->
+                        <div class="tab-pane fade {% if business.business_type == 'LLC' %}show active{% endif %}" id="operating" role="tabpanel">
+                            <h4>The Legal Importance of an Operating Agreement in North Carolina</h4>
+                            <p>In North Carolina, not having an Operating Agreement is a major legal risk. Without a written Operating Agreement, your LLC is automatically governed by default state laws. These laws are broad, generic, and may not reflect how you actually want your business to operate. Worse, they offer no protection in internal disputes, and courts may even question the legitimacy of your LLC if there's no formal agreement in place.</p>
+                            
+                            <h5 class="mt-3">Here's what's at stake:</h5>
+                            <ul>
+                                <li><strong>Limited Liability Protection:</strong> Without an Operating Agreement, courts can "pierce the corporate veil"—putting your personal assets at risk.</li>
+                                <li><strong>Ownership & Control:</strong> North Carolina default laws don't account for your unique business structure. Without a written agreement, disagreements among members can become legal nightmares.</li>
+                                <li><strong>Banking & Compliance:</strong> Most banks require an Operating Agreement to open a business account. You'll also need one to show investors or lenders that your business is legally sound.</li>
+                            </ul>
+
+                            <div class="alert alert-primary">
+                                <strong>Get compliant. Stay protected.</strong> Select the Operating Agreement service to get started.
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- EIN Tab -->
+                        <div class="tab-pane fade {% if business.business_type != 'LLC' and business.business_type != 'CORP' %}show active{% endif %}" id="ein" role="tabpanel">
+                            <h4>Why You Need an Employer Identification Number (EIN)</h4>
+                            <p>An Employer Identification Number (EIN), also known as a Federal Tax Identification Number, is essential for legally operating and growing your business in the United States. It acts as your business's unique ID for federal tax purposes and is a requirement for many business activities.</p>
+                            
+                            <h5 class="mt-3">Legal Requirement for Many Businesses</h5>
+                            <p>An EIN is mandatory if you:</p>
+                            <ul>
+                                <li>Operate as a corporation, partnership, or multi-member LLC</li>
+                                <li>Hire employees or plan to in the near future</li>
+                                <li>File business tax returns or pay excise, employment, or other federal taxes</li>
+                                <li>Open a retirement plan for your business</li>
+                                <li>Work with vendors or financial institutions requiring federal ID</li>
+                            </ul>
+                            <p>Operating without a required EIN can delay critical business operations, create legal complications, and result in fines or penalties.</p>
+                            <h5 class="mt-3">Don't Delay Your Business Setup</h5>
+                            <p>Without an EIN, you can't open a business bank account, apply for licenses or permits, or build business credit. It also creates risks when trying to separate personal and business finances—something every serious entrepreneur must do from the start.</p>
+                            <h5 class="mt-3">Get Your EIN the Right Way, Right Now</h5>
+                            <p>Every day you operate without an EIN is a day you're risking compliance issues and missing out on key opportunities. We make it fast, secure, and simple to get your EIN—ensuring it's done correctly and without delays.</p>
+                            <div class="alert alert-primary">
+                                <strong>Don't delay your business setup.</strong> Select the Federal EIN Application service to get started.
+                            </div>
+                        </div>
+
+                        <!-- Labor Law Tab -->
+                        <div class="tab-pane fade" id="labor" role="tabpanel">
+                            <h4>Stay Compliant with North Carolina Labor Law Posting Requirements</h4>
+                            <p>Labor law compliance isn't optional—it's a legal obligation for every employer in North Carolina. Both federal and state regulations require that businesses visibly display up-to-date labor law posters in the workplace to inform employees of their rights. Failing to do so can result in costly penalties and unwanted scrutiny.</p>
+                            
+                            <h5 class="mt-3">What's Required in North Carolina</h5>
+                            <p>In North Carolina, employers must display a combination of federal and state-mandated posters covering critical employee rights and protections, including:</p>
+                            <ul>
+                                <li>Wage and hour laws (minimum wage, overtime)</li>
+                                <li>Workers' compensation and unemployment insurance</li>
+                                <li>Workplace safety (OSHA)</li>
+                                <li>Anti-discrimination laws (EEOC)</li>
+                                <li>Family and medical leave rights</li>
+                                <li>State-specific employment laws</li>
+                            </ul>
+                            <p>These postings must be displayed in a conspicuous area where all employees can easily see them.</p>
+                            <h5 class="mt-3">Why Compliance Matters</h5>
+                            <p>Non-compliance isn't just a technical violation—it can lead to:</p>
+                            <ul>
+                                <li>Fines from state and federal labor departments</li>
+                                <li>Increased liability in employee disputes or lawsuits</li>
+                                <li>Investigations triggered by a single missing or outdated poster</li>
+                            </ul>
+                            <p>Many businesses overlook this requirement until it's too late. Don't let a simple compliance issue cost you time, money, or legal trouble.</p>
+
+                            <div class="alert alert-primary">
+                                <strong>Get compliant. Stay protected.</strong> Select the Labor Law Poster & Certificate service to order your requirements today.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side: Service Selection Form -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">Compliance Services Request</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Business Information -->
+                    <div class="mb-4">
+                        <h4>Business Information</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Business Name:</strong> {{ business.name }}</p>
+                                <p><strong>Reference Number:</strong> {{ business.reference_number }}</p>
+                                <p><strong>State:</strong> {{ business.state_code }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Business Type:</strong> {{ business.get_business_type_display }}</p>
+                                <p><strong>Principal Address:</strong> {{ business.address }}{% if business.address2 %}, {{ business.address2 }}{% endif %}, {{ business.city }}, {{ business.state_code }} {{ business.zip_code }}</p>
+                                <p><strong>Registered Agent:</strong> {{ business.registered_agent }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h2 class="h5 mb-3">Available Services</h2>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Select Services</label>
+                                    {% for value, text in form.services.field.choices %}
+                                    <div class="form-check mb-2">
+                                        <input type="checkbox" 
+                                               name="{{ form.services.name }}" 
+                                               value="{{ value }}"
+                                               id="id_services_{{ forloop.counter0 }}"
+                                               class="form-check-input service-checkbox"
+                                               data-price="{{ text|slice:'-7:'|cut:'$'|cut:')'|cut:' ' }}"
+                                               checked>
+                                        <label class="form-check-label" for="id_services_{{ forloop.counter0 }}">
+                                            {{ text }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                    {% if form.services.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.services.errors }}
+                                        </div>
+                                    {% endif %}
+                                    <small class="form-text text-muted">{{ form.services.help_text }}</small>
+                                </div>
+
+                                <!-- Price Summary -->
+                                <div class="price-summary mt-4 pt-3 border-top">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Subtotal:</span>
+                                        <span id="subtotal">$0.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2 discount-row" style="display: none !important;">
+                                        <span>10% Discount:</span>
+                                        <span id="discount">-$0.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between fw-bold">
+                                        <span>Total:</span>
+                                        <span id="total">$0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <h2 class="h5 mb-2">Important Information</h2>
+                            <p class="mb-0">
+                                After submitting this form, you will be guided through each selected service's specific requirements.
+                                We will pre-fill information from your business profile where available.
+                            </p>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Continue</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.service-checkbox');
+    const subtotalElement = document.getElementById('subtotal');
+    const discountElement = document.getElementById('discount');
+    const totalElement = document.getElementById('total');
+    const discountRow = document.querySelector('.discount-row');
+    
+    function updateTotal() {
+        let subtotal = 0;
+        let checkedCount = 0;
+        const totalServices = checkboxes.length;
+        
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                subtotal += parseFloat(checkbox.dataset.price);
+                checkedCount++;
+            }
+        });
+        
+        // Check if all services are selected
+        const allSelected = checkedCount === totalServices;
+        let discount = 0;
+        
+        if (allSelected) {
+            discount = subtotal * 0.1; // 10% discount
+            discountRow.classList.remove('d-none');
+            discountRow.style.display = 'flex';
+        } else {
+            discountRow.classList.add('d-none');
+            discountRow.style.display = 'none';
+        }
+        
+        const total = subtotal - discount;
+        
+        // Update the display
+        subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+        discountElement.textContent = `-$${discount.toFixed(2)}`;
+        totalElement.textContent = `$${total.toFixed(2)}`;
+    }
+    
+    // Add event listeners to all checkboxes
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateTotal);
+    });
+    
+    // Initial calculation
+    updateTotal();
+});
+</script>
+{% endblock %}
+
+{% endblock %}

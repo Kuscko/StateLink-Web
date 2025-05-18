@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Confirmation - Business Compliance Organization LLC{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Success Message -->
+            <div class="text-center mb-4">
+                <div class="display-1 text-success mb-3">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+                <h1 class="h2 mb-3">Payment Successful!</h1>
+                <p class="lead text-muted">Thank you for your order. We've sent a confirmation email to {{ user_email }}</p>
+                <div class="alert alert-info mt-3">
+                    <p class="mb-0">Order Reference: <strong>{{ order_reference }}</strong></p>
+                </div>
+            </div>
+
+            <!-- Order Details -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">Order Details</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Business Name:</strong></div>
+                        <div class="col-sm-8">{{ business_name }}</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-4"><strong>Order Reference:</strong></div>
+                        <div class="col-sm-8">{{ order_reference }}</div>
+                    </div>
+                    
+                    <!-- Service Breakdown -->
+                    <div class="mt-4">
+                        <h3 class="h6 mb-3">Service Breakdown</h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th class="text-end">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for service in bundled_services %}
+                                <tr>
+                                    <td>{{ service.name }}</td>
+                                    <td class="text-end">${{ service.price }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% for request in individual_services %}
+                                <tr>
+                                    <td>{{ request.get_request_type_display }}</td>
+                                    <td class="text-end">${{ request.price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                {% if show_discount %}
+                                <tr>
+                                    <th>Subtotal</th>
+                                    <th class="text-end">${{ subtotal }}</th>
+                                </tr>
+                                <tr class="table-success">
+                                    <th>10% Discount</th>
+                                    <th class="text-end">-${{ discount }}</th>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <th>Total</th>
+                                    <th class="text-end">${{ amount }}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insurance Information -->
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="h5 mb-0">Important Insurance Information</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning mb-4">
+                        <h3 class="h6 mb-2"><strong>Insurance Isn't Optional—It's the Law</strong></h3>
+                        <p class="mb-0">To help protect your business, we've partnered with NEXT Insurance, a trusted provider of affordable and easy-to-manage business insurance. Whether you're just getting started or looking to update your coverage, NEXT offers tailored policies to suit your needs.</p>
+                    </div>
+                    <div class="text-center">
+                        <a href="https://track.nextinsurance.com/links?agent_affiliation=18nLnRQb1iWrJSAx&serial=992855993&channel=affiliation" 
+                           class="btn btn-primary btn-lg" 
+                           target="_blank">
+                            Get Your Free Insurance Quote
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Steps -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">Next Steps</h2>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li class="mb-2">Check your email for detailed order confirmation</li>
+                        <li class="mb-2">Review your business insurance requirements</li>
+                        <li class="mb-2">Track your order status in your account dashboard</li>
+                        <li>Contact our support team if you have any questions</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mt-4">
+                <a href="{% url 'core:home' %}" class="btn btn-outline-secondary me-2">Return to Home</a>
+                <a href="{% url 'core:insurance_info' %}" class="btn btn-outline-primary">Learn More About Insurance Requirements</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+{% endblock %} 

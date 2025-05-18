@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}LLC Annual Report - StateLink{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h3 mb-4">LLC Annual Report Submission</h1>
+                
+                <div class="alert alert-info mb-4">
+                    <h2 class="h5 mb-2">Business Information</h2>
+                    <p class="mb-0">
+                        <strong>Name:</strong> {{ business.name }}<br>
+                        <strong>Type:</strong> {{ business.get_business_type_display }}<br>
+                        <strong>State:</strong> {{ business.get_state_display }}<br>
+                        <strong>Reference Number:</strong> {{ business.reference_number }}
+                    </p>
+                </div>
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="h5 mb-3">Business Address Information</h2>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.principal_office_address.id_for_label }}" class="form-label">Principal Office Address</label>
+                                {{ form.principal_office_address }}
+                                {% if form.principal_office_address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.principal_office_address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.registered_agent_name.id_for_label }}" class="form-label">Registered Agent Name</label>
+                                {{ form.registered_agent_name }}
+                                {% if form.registered_agent_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.registered_agent_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.registered_agent_address.id_for_label }}" class="form-label">Registered Agent Address</label>
+                                {{ form.registered_agent_address }}
+                                {% if form.registered_agent_address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.registered_agent_address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="h5 mb-3">LLC Members and Managers</h2>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.members.id_for_label }}" class="form-label">Members</label>
+                                {{ form.members }}
+                                {% if form.members.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.members.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Enter one member per line (e.g., "John Smith, 50% ownership")</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.managers.id_for_label }}" class="form-label">Managers</label>
+                                {{ form.managers }}
+                                {% if form.managers.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.managers.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Enter one manager per line</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h2 class="h5 mb-2">Important Information</h2>
+                        <p class="mb-0">
+                            By submitting this form, you confirm that all information provided is accurate and complete.
+                            Please ensure you have all required documentation ready before proceeding to payment.
+                        </p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Continue to Payment</button>
+                        <a href="{% url 'core:compliance_request' business.id %}" class="btn btn-outline-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

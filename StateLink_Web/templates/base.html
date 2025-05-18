@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NC StateLink Compliance Portal{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .main-content {
+            min-height: calc(100vh - 160px);
+            padding: 2rem 0;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+        .modal-body h4 {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .modal-body p {
+            margin-bottom: 1rem;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">NC StateLink</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; {% now "Y" %} Business Compliance Organization NC LLC. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-decoration-none me-3" data-bs-toggle="modal" data-bs-target="#refundPolicyModal">Refund Policy</a>
+                    <a href="#" class="text-decoration-none me-3" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal">Privacy Policy</a>
+                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#termsOfServiceModal">Terms of Service</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <p class="text-muted small mb-1" style="font-size: 0.85rem;">
+                        <strong>IMPORTANT NOTICE:</strong> The documents offered by this advertisement are available to North Carolina consumers free of charge or for a lesser price from (North Carolina Secretary of State, 919.814.5400, 2 South Salisbury Street, Raleigh, NC 27601) (Department of Labor, 1-866-487-2365, 200 Constitution Ave., NW Washington, DC 20210). You are NOT required to purchase anything from this company and the company is NOT affiliated, endorsed, or approved by any governmental entity. The items offered in this advertisement has NOT been approved or endorsed by any governmental agency, and this offer is NOT being made by an agency of the goverment.
+                    </p>
+                    <p class="text-muted small mb-0" style="font-size: 0.85rem;">
+                        Business Compliance Org NC LLC is not a government agency or law firm and is not affiliated with the Internal Revenue Service (IRS) or any other federal or state organizations. Business Compliance Org NC LLC provides third-party application assistance services. This is not a bill. The services offered are for informational and general guidance purposes only and do not constitute legal advice. For legal advice tailored to your specific situation, please consult with a licensed attorney. All payments include premium processing service fees. Please allow up to 21 business days to receive your documents. All sales are final and non-refundable. New business registration information is obtained from public records.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal fade" id="privacyPolicyModal" tabindex="-1" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="privacyPolicyModalLabel">Privacy Policy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Last updated: {% now "F j, Y" %}</p>
+                    
+                    <h4>1. Introduction</h4>
+                    <p>Business Compliance Organization NC LLC ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy outlines our practices concerning the collection, use, and disclosure of your information when you utilize our North Carolina business compliance services, including the preparation and filing of government forms and processing of payments.</p>
+
+                    <h4>2. Information We Collect</h4>
+                    <p>To provide our services, we collect various types of information, including:</p>
+                    <h6 class="mt-3">2.1 Personal and Business Information</h6>
+                    <ul>
+                        <li><strong>Contact Information:</strong> Name, email address, phone number, mailing address.</li>
+                        <li><strong>Business Details:</strong> Business name, type (e.g., LLC, Corporation), registered agent information, principal office address, nature of business, and other details required for specific filings.</li>
+                        <li><strong>Identification Information:</strong> Social Security Number (SSN) or Individual Taxpayer IdentificationNumber (ITIN) for individuals, and Employer Identification Number (EIN) for businesses, as required for tax and registration purposes (e.g., Federal EIN applications).</li>
+                        <li><strong>Officer/Director/Member Information:</strong> Names, addresses, and titles of individuals associated with the business, as required for annual reports and other corporate filings.</li>
+                        <li><strong>Financial Information:</strong> Payment card details (credit/debit card numbers, expiration dates, CVV codes) for processing service fees and government filing fees. This information is processed through our secure payment providers (e.g., WooCommerce, Heartland Payment Systems).</li>
+                    </ul>
+
+                    <h6 class="mt-3">2.2 Automatically Collected Information</h6>
+                    <ul>
+                        <li><strong>Usage Data:</strong> Information about how you interact with our website, such as IP address, browser type, operating system, pages visited, and dates/times of access.</li>
+                        <li><strong>Cookies and Tracking Technologies:</strong> We use cookies to enhance user experience, analyze site traffic, and for security purposes.</li>
+                    </ul>
+
+                    <h4>3. How We Use Your Information</h4>
+                    <p>Your information is used for the following purposes:</p>
+                    <ul>
+                        <li><strong>Service Provision:</strong> To prepare and file business formation documents, annual reports, EIN applications, and other compliance-related documents with the North Carolina Secretary of State, the IRS, and other relevant government agencies.</li>
+                        <li><strong>Payment Processing:</strong> To process payments for our services and any applicable government filing fees through our integrated payment gateways (e.g., WooCommerce, Heartland).</li>
+                        <li><strong>Communication:</strong> To communicate with you regarding your service requests, account status, updates to our services, and to provide customer support.</li>
+                        <li><strong>Compliance and Legal Obligations:</strong> To comply with applicable North Carolina and federal laws and regulations, and to respond to legal requests or prevent fraud.</li>
+                        <li><strong>Service Improvement:</strong> To analyze usage trends and improve our website, services, and user experience.</li>
+                    </ul>
+
+                    <h4>4. Information Sharing and Disclosure</h4>
+                    <p>We only share your information under specific circumstances:</p>
+                    <ul>
+                        <li><strong>Government Agencies:</strong> We will disclose your personal and business information to the North Carolina Secretary of State, the Internal Revenue Service (IRS), and other relevant government entities as necessary to fulfill your service requests (e.g., filing your annual report or applying for an EIN).</li>
+                        <li><strong>Payment Processors:</strong> We share your financial information with trusted third-party payment processors (e.g., WooCommerce, Heartland) to securely process your payments. These providers are PCI-DSS compliant and have their own privacy policies governing the use of your information.</li>
+                        <li><strong>Service Providers:</strong> We may engage third-party companies and individuals to facilitate our services (e.g., document preparation assistance, IT support). These providers have access to your information only to perform these tasks on our behalf and are obligated not to disclose or use it for any other purpose.</li>
+                        <li><strong>Legal Requirements:</strong> We may disclose your information if required to do so by law or in response to valid requests by public authorities (e.g., a court or a government agency), or to protect the rights, property, or safety of our company, our customers, or others.</li>
+                    </ul>
+                    <p>We do not sell your personal or business information to third parties for marketing purposes.</p>
+
+                    <h4>5. Data Security</h4>
+                    <p>We implement robust security measures to protect your information from unauthorized access, use, or disclosure. These include:</p>
+                    <ul>
+                        <li>Encryption of sensitive data (such as SSNs and payment information) during transmission and storage.</li>
+                        <li>Use of secure socket layer (SSL) technology for data transmission.</li>
+                        <li>Regular security assessments and updates to our systems.</li>
+                        <li>Restricted access to personal information to authorized personnel only.</li>
+                        <li>Compliance with industry best practices for data protection.</li>
+                    </ul>
+                    <p>While we strive to use commercially acceptable means to protect your Personal Information, no method of transmission over the Internet, or method of electronic storage is 100% secure. Therefore, we cannot guarantee its absolute security.</p>
+
+                    <h4>6. Data Retention</h4>
+                    <p>We retain your personal and business information for as long as necessary to provide you with our services, comply with our legal obligations (including North Carolina state record-keeping requirements for business filings), resolve disputes, and enforce our agreements. Retention periods will vary depending on the type of information and the purpose for which it was collected.</p>
+
+                    <h4>7. Your Rights and Choices (North Carolina Residents)</h4>
+                    <p>You have certain rights regarding your personal information, subject to local data protection laws. These may include the right to:</p>
+                    <ul>
+                        <li>Access the personal information we hold about you.</li>
+                        <li>Request correction of inaccurate or incomplete information.</li>
+                        <li>Request deletion of your personal information, subject to certain exceptions (e.g., information required for ongoing legal obligations or for the completion of services you requested).</li>
+                        <li>Opt-out of certain uses of your information (e.g., marketing communications).</li>
+                    </ul>
+                    <p>To exercise these rights, please contact us using the details provided below. We will respond to your request in accordance with applicable North Carolina and federal law.</p>
+
+                    <h4>8. Cookies and Tracking Technologies</h4>
+                    <p>We use cookies and similar tracking technologies to enhance your experience on our website, analyze site usage, and for security purposes. You can control the use of cookies at the individual browser level. If you reject cookies, you may still use our site, but your ability to use some features or areas of our site may be limited.</p>
+
+                    <h4>9. Children's Privacy</h4>
+                    <p>Our services are not directed to individuals under the age of 18. We do not knowingly collect personal information from children. If we become aware that a child has provided us with personal information, we will take steps to delete such information.</p>
+
+                    <h4>10. Changes to This Privacy Policy</h4>
+                    <p>We may update this Privacy Policy periodically to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will notify you of any material changes by posting the new Privacy Policy on our website and updating the "Last updated" date.</p>
+
+                    <h4>11. Contact Us</h4>
+                    <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:</p>
+                    <p>Business Compliance Organization NC LLC<br>Email: <a href="mailto:support@ncbizpay.org">support@ncbizpay.org</a></p>
+                    <!-- Include physical address and phone number if appropriate -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div class="modal fade" id="termsOfServiceModal" tabindex="-1" aria-labelledby="termsOfServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="termsOfServiceModalLabel">Terms of Service</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Last updated: {% now "F j, Y" %}</p>
+
+                    <h4>1. Acceptance of Terms</h4>
+                    <p>By accessing or using the services ("Services") provided by Business Compliance Organization NC LLC ("we," "our," or "us"), including but not limited to our website and related business filing and compliance assistance for North Carolina entities, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not use our Services.</p>
+
+                    <h4>2. Service Description</h4>
+                    <h6 class="mt-3">2.1 Nature of Services</h6>
+                    <p>We provide third-party application assistance services for businesses operating or forming in North Carolina. Our services include, but are not limited to, the preparation and submission of documents for business formation (e.g., Articles of Organization for LLCs, Articles of Incorporation for Corporations), Federal EIN applications, annual report filings, operating agreements, and other compliance-related documents as requested by you. We are a private company and are NOT affiliated with, endorsed by, or an agency of the North Carolina Secretary of State, the Internal Revenue Service (IRS), or any other federal, state, or local government entity.</p>
+                    
+                    <h6 class="mt-3">2.2 Accuracy of Information Provided by You</h6>
+                    <p>You are solely responsible for the accuracy, completeness, and legality of all information you provide to us for the preparation and filing of any documents. We will use the information you provide to complete the forms. You agree to review all documents for accuracy before submission or authorizing us to submit them on your behalf.</p>
+
+                    <h6 class="mt-3">2.3 No Legal, Financial, or Tax Advice</h6>
+                    <p>Business Compliance Organization NC LLC is not a law firm or an accounting firm, and our employees are not attorneys or accountants. We do not provide legal, financial, or tax advice. The information and services provided are for informational and general guidance purposes only and should not be a substitute for consultation with a licensed attorney or financial/tax professional. We recommend that you consult with qualified professionals for advice tailored to your specific situation.</p>
+
+                    <h4>3. User Accounts and Responsibilities</h4>
+                    <h6 class="mt-3">3.1 Account Creation and Security</h6>
+                    <p>You may be required to create an account to access certain features of our Services. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account.</p>
+
+                    <h6 class="mt-3">3.2 User Conduct</h6>
+                    <p>You agree to use our Services only for lawful purposes and in accordance with these Terms. You will not:</p>
+                    <ul>
+                        <li>Provide any false, misleading, or inaccurate information.</li>
+                        <li>Use the Services in any way that violates any applicable North Carolina, federal, or local laws or regulations.</li>
+                        <li>Impersonate any person or entity, or falsely state or otherwise misrepresent your affiliation with a person or entity.</li>
+                        <li>Engage in any activity that could damage, disable, overburden, or impair our Services or interfere with any other party's use of the Services.</li>
+                    </ul>
+
+                    <h4>4. Fees, Payment, and Refunds</h4>
+                    <h6 class="mt-3">4.1 Service Fees</h6>
+                    <p>Our fees for Services are clearly disclosed on our website or at the point of purchase. These fees are for our document preparation and filing assistance services only.</p>
+                    
+                    <h6 class="mt-3">4.2 Government Filing Fees</h6>
+                    <p>In addition to our service fees, you are responsible for paying all applicable government filing fees required by the North Carolina Secretary of State, the IRS, or other agencies. These fees will be clearly itemized. We may collect these government fees from you and remit them to the appropriate agency on your behalf, or we may direct you to pay them directly.</p>
+
+                    <h6 class="mt-3">4.3 Payment Processing</h6>
+                    <p>We use third-party payment processors (e.g., WooCommerce, Heartland Payment Systems) to handle all payment transactions. By providing your payment information, you authorize us and our payment processors to charge the applicable fees to your selected payment method. You agree to abide by the terms and conditions of our payment processors.</p>
+
+                    <h6 class="mt-3">4.4 Refund Policy</h6>
+                    <p>Our refund policy is detailed separately. Generally, service fees are non-refundable once we have commenced work on your request or submitted documents on your behalf, unless otherwise specified in our Refund Policy. Government filing fees are non-refundable once paid to the government agency, regardless of the outcome of the filing.</p>
+
+                    <h4>5. Intellectual Property</h4>
+                    <p>All content, features, and functionality on our website and within our Services, including text, graphics, logos, and software, are the exclusive property of Business Compliance Organization NC LLC or its licensors and are protected by copyright, trademark, and other intellectual property laws. You may not use, reproduce, or distribute any content from our Services without our prior written permission.</p>
+
+                    <h4>6. Disclaimer of Warranties</h4>
+                    <p>OUR SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT ANY WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE SERVICES WILL BE ERROR-FREE, UNINTERRUPTED, SECURE, OR THAT DEFECTS WILL BE CORRECTED. WE MAKE NO WARRANTIES REGARDING THE ACCURACY, RELIABILITY, OR COMPLETENESS OF ANY INFORMATION PROVIDED THROUGH THE SERVICES. WE DO NOT GUARANTEE THAT ANY FILINGS MADE ON YOUR BEHALF WILL BE ACCEPTED OR APPROVED BY THE RELEVANT GOVERNMENT AGENCY, AS SUCH DECISIONS ARE AT THE SOLE DISCRETION OF THE AGENCY. DELAYS IN PROCESSING BY GOVERNMENT AGENCIES ARE BEYOND OUR CONTROL.</p>
+
+                    <h4>7. Limitation of Liability</h4>
+                    <p>TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL BUSINESS COMPLIANCE ORGANIZATION NC LLC, ITS AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM (I) YOUR ACCESS TO OR USE OF OR INABILITY TO ACCESS OR USE THE SERVICES; (II) ANY CONDUCT OR CONTENT OF ANY THIRD PARTY ON THE SERVICES; (III) ANY CONTENT OBTAINED FROM THE SERVICES; (IV) ANY DELAYS, ERRORS, OR OMISSIONS BY GOVERNMENT AGENCIES; AND (V) UNAUTHORIZED ACCESS, USE, OR ALTERATION OF YOUR TRANSMISSIONS OR CONTENT, WHETHER BASED ON WARRANTY, CONTRACT, TORT (INCLUDING NEGLIGENCE), OR ANY OTHER LEGAL THEORY, WHETHER OR NOT WE HAVE BEEN INFORMED OF THE POSSIBILITY OF SUCH DAMAGE, AND EVEN IF A REMEDY SET FORTH HEREIN IS FOUND TO HAVE FAILED OF ITS ESSENTIAL PURPOSE. OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THE SERVICES OR THESE TERMS SHALL NOT EXCEED THE AMOUNT OF FEES PAID BY YOU TO US FOR THE SPECIFIC SERVICE GIVING RISE TO THE CLAIM.</p>
+
+                    <h4>8. Indemnification</h4>
+                    <p>You agree to defend, indemnify, and hold harmless Business Compliance Organization NC LLC, its affiliates, officers, directors, employees, and agents from and against any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses (including but not limited to attorney's fees) arising from: (i) your use of and access to the Services; (ii) your violation of any term of these Terms; (iii) your violation of any third-party right, including without limitation any copyright, property, or privacy right; or (iv) any claim that information you provided caused damage to a third party or a government agency. This defense and indemnification obligation will survive these Terms and your use of the Services.</p>
+
+                    <h4>9. Termination</h4>
+                    <p>We reserve the right to terminate or suspend your account and access to the Services, in our sole discretion, at any time and without notice or liability, for any reason, including but not limited to your breach of these Terms.</p>
+
+                    <h4>10. Governing Law and Dispute Resolution</h4>
+                    <p>These Terms shall be governed by and construed in accordance with the laws of the State of North Carolina, without regard to its conflict of law principles. Any dispute arising out of or relating to these Terms or the Services shall be resolved exclusively in the state or federal courts located in North Carolina. You consent to the personal jurisdiction of such courts.</p>
+
+                    <h4>11. Changes to Terms</h4>
+                    <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion. By continuing to access or use our Services after any revisions become effective, you agree to be bound by the revised terms.</p>
+
+                    <h4>12. Contact Information</h4>
+                    <p>If you have any questions about these Terms, please contact us at:</p>
+                    <p>Business Compliance Organization NC LLC<br>Email: <a href="mailto:support@ncbizpay.org">support@ncbizpay.org</a></p>
+                     <!-- Include physical address and phone number if appropriate -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Refund Policy Modal -->
+    <div class="modal fade" id="refundPolicyModal" tabindex="-1" aria-labelledby="refundPolicyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="refundPolicyModalLabel">Refund Policy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="lead">Thank you for shopping with us! We are committed to delivering excellent products and ensuring your satisfaction. Please review our refund policy below:</p>
+                    
+                    <div class="mb-4">
+                        <h6 class="fw-bold">1. Digital Products Delivery</h6>
+                        <p>We strive to deliver your digital products via email within 24 business hours of purchase. If you do not receive your product within this timeframe, you are entitled to request a full refund. Please contact us at <a href="mailto:support@ncbizpay.org">support@ncbizpay.org</a> with your order details if you have not received your product within 24 business hours.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold">2. Refunds Offered Only for Delivery Delays</h6>
+                        <p>Please note, refunds will only be issued if your digital product is not delivered within the specified 24 business hours. Any other issues or concerns related to the product will not be eligible for a refund. Once the product has been delivered within the 24-business-hour period, all sales are considered final, and no further refunds will be processed.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold">3. Non-Refundable Items</h6>
+                        <p>After the product has been delivered to you within the specified 24 business hours, no refunds will be issued, except in cases of delayed delivery as described above.</p>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <p class="mb-0">If you have any questions or concerns, feel free to reach out to us at <a href="mailto:support@ncbizpay.org">support@ncbizpay.org</a>. We are happy to assist!</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

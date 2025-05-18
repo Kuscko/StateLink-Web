@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Annual Report - StateLink{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h3 mb-4">Annual Report Submission</h1>
+                
+                <div class="alert alert-info mb-4">
+                    <h2 class="h5 mb-2">Business Information</h2>
+                    <p class="mb-0">
+                        <strong>Name:</strong> {{ business.name }}<br>
+                        <strong>Type:</strong> {{ business.get_business_type_display }}<br>
+                        <strong>State:</strong> {{ business.get_state_display }}<br>
+                        <strong>Reference Number:</strong> {{ business.reference_number }}
+                    </p>
+                </div>
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="h5 mb-3">Business Address Information</h2>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.principal_office_address.id_for_label }}" class="form-label">Principal Office Address</label>
+                                {{ form.principal_office_address }}
+                                {% if form.principal_office_address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.principal_office_address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.registered_agent_name.id_for_label }}" class="form-label">Registered Agent Name</label>
+                                {{ form.registered_agent_name }}
+                                {% if form.registered_agent_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.registered_agent_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.registered_agent_address.id_for_label }}" class="form-label">Registered Agent Address</label>
+                                {{ form.registered_agent_address }}
+                                {% if form.registered_agent_address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.registered_agent_address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="h5 mb-3">Corporate Officers and Directors</h2>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.officers.id_for_label }}" class="form-label">Officers</label>
+                                {{ form.officers }}
+                                {% if form.officers.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.officers.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Enter one officer per line (e.g., "John Smith, President")</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.directors.id_for_label }}" class="form-label">Directors</label>
+                                {{ form.directors }}
+                                {% if form.directors.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.directors.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Enter one director per line</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="h5 mb-3">Share Information</h2>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="{{ form.authorized_shares.id_for_label }}" class="form-label">Authorized Shares</label>
+                                    {{ form.authorized_shares }}
+                                    {% if form.authorized_shares.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.authorized_shares.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="{{ form.issued_shares.id_for_label }}" class="form-label">Issued Shares</label>
+                                    {{ form.issued_shares }}
+                                    {% if form.issued_shares.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.issued_shares.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-4 mb-3">
+                                    <label for="{{ form.par_value.id_for_label }}" class="form-label">Par Value per Share</label>
+                                    {{ form.par_value }}
+                                    {% if form.par_value.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.par_value.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h2 class="h5 mb-2">Important Information</h2>
+                        <p class="mb-0">
+                            By submitting this form, you confirm that all information provided is accurate and complete.
+                            Please ensure you have all required documentation ready before proceeding to payment.
+                        </p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Continue to Payment</button>
+                        <a href="{% url 'core:compliance_request' business.id %}" class="btn btn-outline-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

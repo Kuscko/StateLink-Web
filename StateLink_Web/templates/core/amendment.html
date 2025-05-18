@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Business Amendment - StateLink{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h3 mb-4">Business Amendment</h1>
+                
+                <div class="alert alert-info mb-4">
+                    <h2 class="h5 mb-2">Business Information</h2>
+                    <p class="mb-0">
+                        <strong>Name:</strong> {{ business.name }}<br>
+                        <strong>Type:</strong> {{ business.get_business_type_display }}<br>
+                        <strong>State:</strong> {{ business.get_state_display }}<br>
+                        <strong>Reference Number:</strong> {{ business.reference_number }}
+                    </p>
+                </div>
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="h5 mb-3">Amendment Details</h2>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.amendment_type.id_for_label }}" class="form-label">Type of Amendment</label>
+                                {{ form.amendment_type }}
+                                {% if form.amendment_type.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.amendment_type.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.current_value.id_for_label }}" class="form-label">Current Value</label>
+                                {{ form.current_value }}
+                                {% if form.current_value.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.current_value.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Enter the current value that needs to be changed</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.new_value.id_for_label }}" class="form-label">New Value</label>
+                                {{ form.new_value }}
+                                {% if form.new_value.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.new_value.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Enter the new value that will replace the current value</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.reason_for_change.id_for_label }}" class="form-label">Reason for Change</label>
+                                {{ form.reason_for_change }}
+                                {% if form.reason_for_change.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.reason_for_change.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Please explain why this change is being made</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h2 class="h5 mb-2">Important Information</h2>
+                        <p class="mb-0">
+                            By submitting this form, you confirm that all information provided is accurate and complete.
+                            Please ensure you have all required documentation ready before proceeding to payment.
+                        </p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Continue to Payment</button>
+                        <a href="{% url 'core:compliance_request' business.id %}" class="btn btn-outline-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

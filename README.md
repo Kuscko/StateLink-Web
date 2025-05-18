@@ -19,8 +19,8 @@ Uses best web development practices for 2024 to my knowledge.
 #### Visual Studio
 1. Clone the Repository
 2. Open in Visual Studio
-3. Change the name of the Folders from `DjangoWebTemplate` to what project name you chose, . i.e. `myproject`.
-4. CTRL+SHIFT+F (or MAC equivalent) and search for `DjangoWebTemplate`.
+3. Change the name of the Folders from `StateLink_Web` to what project name you chose, . i.e. `myproject`.
+4. CTRL+SHIFT+F (or MAC equivalent) and search for `StateLink_Web`.
 5. Expand the box and type in the repository name you choose and confirm the replacement.
 6. Create a Python Virutal Environment <br />
     `CTRL+SHIFT+P` <br />

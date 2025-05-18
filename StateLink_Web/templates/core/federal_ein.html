@@ -1,0 +1,690 @@
+{% extends 'core/service_form_base.html' %}
+
+{% block service_form_fields %}
+<div class="container-fluid"> <!-- Using container-fluid for better spacing on wider screens -->
+
+    <h4 class="mb-3">Federal EIN Application</h4>
+    <p class="mb-4">Please complete all relevant sections of the application below.</p>
+
+    <!-- Applicant Information Section -->
+    <div id="applicant_info_section" class="mb-4 p-3 border rounded">
+        <h5>Applicant Information</h5>
+        <p class="text-muted small">This information is for our records and communication regarding this EIN application.</p>
+        
+        <div class="mb-3">
+            <label for="{{ form.applicant_reference_number.id_for_label }}" class="form-label">{{ form.applicant_reference_number.label }}</label>
+            {{ form.applicant_reference_number }}
+            {% if form.applicant_reference_number.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.applicant_reference_number.help_text }}</small>
+            {% endif %}
+            {% if form.applicant_reference_number.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.applicant_reference_number.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.applicant_first_name.id_for_label }}" class="form-label">{{ form.applicant_first_name.label }}</label>
+                {{ form.applicant_first_name }}
+                {% if form.applicant_first_name.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.applicant_first_name.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.applicant_last_name.id_for_label }}" class="form-label">{{ form.applicant_last_name.label }}</label>
+                {{ form.applicant_last_name }}
+                {% if form.applicant_last_name.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.applicant_last_name.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.applicant_email.id_for_label }}" class="form-label">{{ form.applicant_email.label }}</label>
+                {{ form.applicant_email }}
+                {% if form.applicant_email.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.applicant_email.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.applicant_phone_number.id_for_label }}" class="form-label">{{ form.applicant_phone_number.label }}</label>
+                {{ form.applicant_phone_number }}
+                {% if form.applicant_phone_number.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.applicant_phone_number.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: Identify Legal Structure -->
+    <div id="legal_structure_section" class="mb-4 p-3 border rounded">
+        <h5>1. Identify Your Legal Structure</h5>
+        <div class="mb-3">
+            <label for="{{ form.ein_legal_structure.id_for_label }}" class="form-label">{{ form.ein_legal_structure.label }}</label>
+            {{ form.ein_legal_structure }}
+            {% if form.ein_legal_structure.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.ein_legal_structure.help_text }}</small>
+            {% endif %}
+            {% if form.ein_legal_structure.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.ein_legal_structure.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Members Count Field (Always Visible) -->
+        <div class="mb-3">
+            <label for="{{ form.sole_proprietor_members_count.id_for_label }}" class="form-label">{{ form.sole_proprietor_members_count.label }}</label>
+            {{ form.sole_proprietor_members_count }}
+            {% if form.sole_proprietor_members_count.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.sole_proprietor_members_count.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Partnership Section -->
+        <div id="partnership_section" class="mb-3" style="display: none;">
+            <div class="mb-3">
+                <label class="form-label">{{ form.partnership_type.label }}</label>
+                <div class="mb-2">
+                    {% for radio in form.partnership_type %}
+                        <div class="form-check">
+                            {{ radio.tag }}
+                            <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="partnership-descriptions mt-2">
+                    <div class="partnership-desc" data-type="PARTNERSHIP" style="display: none;">
+                        <small class="text-muted">
+                            A partnership is a relationship existing between two or more persons or groups who join together to carry on a trade or business. 
+                            Each partner contributes money, property, labor, or skill, and expects to share in the profits and losses of the business.
+                        </small>
+                    </div>
+                    <div class="joint-venture-desc" data-type="JOINT_VENTURE" style="display: none;">
+                        <small class="text-muted">
+                            A joint venture is a partnership formed between two or more business entities. 
+                            These businesses share risk or expertise on a specific project or group of projects.
+                        </small>
+                    </div>
+                </div>
+                {% if form.partnership_type.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.partnership_type.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Corporation Section -->
+        <div id="corporation_section" class="mb-3" style="display: none;">
+            <div class="mb-3">
+                <label class="form-label">{{ form.corporation_type.label }}</label>
+                <div class="mb-2">
+                    {% for radio in form.corporation_type %}
+                        <div class="form-check">
+                            {{ radio.tag }}
+                            <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="corporation-descriptions mt-2">
+                    <div class="corporation-desc" data-type="CORPORATION" style="display: none;">
+                        <small class="text-muted">
+                            A corporation is a person or group of people who establish a legal entity by filing articles of incorporation with the state's secretary of state granting it certain legal powers, rights, privileges, and liabilities.
+                        </small>
+                    </div>
+                    <div class="s-corporation-desc" data-type="S_CORPORATION" style="display: none;">
+                        <small class="text-muted">
+                            The income of an S corporation generally is taxed to the shareholders of the corporation rather than to the corporation itself. However, an S corporation may still owe tax on certain income.
+                        </small>
+                    </div>
+                </div>
+                {% if form.corporation_type.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.corporation_type.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: Responsible Party -->
+    <div id="responsible_party_section" class="mb-4 p-3 border rounded">
+        <h5>2. Responsible Party Information</h5>
+        <p class="text-muted small">The responsible party must be an individual (i.e., a natural person) who has a valid SSN or ITIN. This person must be the principal officer, general partner, grantor, owner, or trustor of the business.</p>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.rp_first_name.id_for_label }}" class="form-label">{{ form.rp_first_name.label }}</label>
+                {{ form.rp_first_name }}
+                {% if form.rp_first_name.errors %}<div class="invalid-feedback d-block">{% for error in form.rp_first_name.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.rp_middle_name.id_for_label }}" class="form-label">{{ form.rp_middle_name.label }}</label>
+                {{ form.rp_middle_name }}
+                {% if form.rp_middle_name.errors %}<div class="invalid-feedback d-block">{% for error in form.rp_middle_name.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.rp_suffix.id_for_label }}" class="form-label">{{ form.rp_suffix.label }}</label>
+                {{ form.rp_suffix }}
+                {% if form.rp_suffix.errors %}<div class="invalid-feedback d-block">{% for error in form.rp_suffix.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.rp_last_name.id_for_label }}" class="form-label">{{ form.rp_last_name.label }}</label>
+                {{ form.rp_last_name }}
+                {% if form.rp_last_name.errors %}<div class="invalid-feedback d-block">{% for error in form.rp_last_name.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-7 mb-3">
+                <label for="{{ form.rp_ssn_itin.id_for_label }}" class="form-label">{{ form.rp_ssn_itin.label }}</label>
+                {{ form.rp_ssn_itin }}
+                {% if form.rp_ssn_itin.help_text %}<small class="form-text text-muted d-block mt-1">{{ form.rp_ssn_itin.help_text }}</small>{% endif %}
+                {% if form.rp_ssn_itin.errors %}<div class="invalid-feedback d-block">{% for error in form.rp_ssn_itin.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+            <div class="col-md-5 mb-3">
+                <label for="{{ form.rp_ssn_itin_type.id_for_label }}" class="form-label">{{ form.rp_ssn_itin_type.label }}</label>
+                {{ form.rp_ssn_itin_type }}
+                {% if form.rp_ssn_itin_type.errors %}<div class="invalid-feedback d-block">{% for error in form.rp_ssn_itin_type.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.responsible_party_title.id_for_label }}" class="form-label">{{ form.responsible_party_title.label }}</label>
+            {{ form.responsible_party_title }}
+            {% if form.responsible_party_title.help_text %}<small class="form-text text-muted d-block mt-1">{{ form.responsible_party_title.help_text }}</small>{% endif %}
+            {% if form.responsible_party_title.errors %}<div class="invalid-feedback d-block">{% for error in form.responsible_party_title.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+    </div>
+
+    <!-- Section 3: LLC Details (Conditional - visibility handled by JS) -->
+    <div id="llc_details_section" class="mb-4 p-3 border rounded" style="display: none;"> <!-- Initially hidden, JS will show if LLC -->
+        <h5>3. Limited Liability Company (LLC) Details</h5>
+        <div class="mb-3">
+            <label for="{{ form.llc_members_count.id_for_label }}" class="form-label">{{ form.llc_members_count.label }}</label>
+            {{ form.llc_members_count }}
+            {% if form.llc_members_count.help_text %}<small class="form-text text-muted d-block mt-1">{{ form.llc_members_count.help_text }}</small>{% endif %}
+            {% if form.llc_members_count.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_members_count.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+
+        <h6>LLC Physical Address</h6>
+        <div class="mb-3">
+            <label for="{{ form.llc_physical_street.id_for_label }}" class="form-label">{{ form.llc_physical_street.label }}</label>
+            {{ form.llc_physical_street }}
+            {% if form.llc_physical_street.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_physical_street.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.llc_physical_apt.id_for_label }}" class="form-label">{{ form.llc_physical_apt.label }}</label>
+            {{ form.llc_physical_apt }}
+            {% if form.llc_physical_apt.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_physical_apt.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+        <div class="row">
+            <div class="col-md-5 mb-3">
+                <label for="{{ form.llc_physical_city.id_for_label }}" class="form-label">{{ form.llc_physical_city.label }}</label>
+                {{ form.llc_physical_city }}
+                {% if form.llc_physical_city.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_physical_city.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="{{ form.llc_physical_state_location.id_for_label }}" class="form-label">{{ form.llc_physical_state_location.label }}</label>
+                {{ form.llc_physical_state_location }}
+                {% if form.llc_physical_state_location.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_physical_state_location.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+            <div class="col-md-3 mb-3">
+                <label for="{{ form.llc_physical_zip.id_for_label }}" class="form-label">{{ form.llc_physical_zip.label }}</label>
+                {{ form.llc_physical_zip }}
+                {% if form.llc_physical_zip.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_physical_zip.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">{{ form.llc_has_different_mailing_address.label }}</label>
+            <div>
+            {% for radio in form.llc_has_different_mailing_address %}
+                <div class="form-check form-check-inline">
+                    {{ radio.tag }}
+                    <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                </div>
+            {% endfor %}
+            </div>
+            {% if form.llc_has_different_mailing_address.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_has_different_mailing_address.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+        
+        <div id="llc_mailing_address_section" style="display: none;"> <!-- Initially hidden, JS will show if 'Yes' -->
+            <h6>LLC Mailing Address</h6>
+            <div class="mb-3">
+                <label for="{{ form.llc_mail_street.id_for_label }}" class="form-label">{{ form.llc_mail_street.label }}</label>
+                {{ form.llc_mail_street }}
+                {% if form.llc_mail_street.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_mail_street.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.llc_mail_apt.id_for_label }}" class="form-label">{{ form.llc_mail_apt.label }}</label>
+                {{ form.llc_mail_apt }}
+                {% if form.llc_mail_apt.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_mail_apt.errors %}{{ error }}{% endfor %}</div>{% endif %}
+            </div>
+            <div class="row">
+                <div class="col-md-5 mb-3">
+                    <label for="{{ form.llc_mail_city.id_for_label }}" class="form-label">{{ form.llc_mail_city.label }}</label>
+                    {{ form.llc_mail_city }}
+                    {% if form.llc_mail_city.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_mail_city.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label for="{{ form.llc_mail_state.id_for_label }}" class="form-label">{{ form.llc_mail_state.label }}</label>
+                    {{ form.llc_mail_state }}
+                    {% if form.llc_mail_state.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_mail_state.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="{{ form.llc_mail_zip.id_for_label }}" class="form-label">{{ form.llc_mail_zip.label }}</label>
+                    {{ form.llc_mail_zip }}
+                    {% if form.llc_mail_zip.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_mail_zip.errors %}{{ error }}{% endfor %}</div>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3 mt-3">
+            <label for="{{ form.llc_legal_name_match_articles.id_for_label }}" class="form-label">{{ form.llc_legal_name_match_articles.label }}</label>
+            {{ form.llc_legal_name_match_articles }}
+            {% if form.llc_legal_name_match_articles.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_legal_name_match_articles.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.llc_trade_name.id_for_label }}" class="form-label">{{ form.llc_trade_name.label }}</label>
+            {{ form.llc_trade_name }}
+            {% if form.llc_trade_name.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_trade_name.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.llc_county_location.id_for_label }}" class="form-label">{{ form.llc_county_location.label }}</label>
+            {{ form.llc_county_location }}
+            {% if form.llc_county_location.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_county_location.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.llc_state_of_organization.id_for_label }}" class="form-label">{{ form.llc_state_of_organization.label }}</label>
+            {{ form.llc_state_of_organization }}
+            {% if form.llc_state_of_organization.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_state_of_organization.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.llc_file_date.id_for_label }}" class="form-label">{{ form.llc_file_date.label }}</label>
+            {{ form.llc_file_date }}
+            {% if form.llc_file_date.help_text %}<small class="form-text text-muted d-block mt-1">{{ form.llc_file_date.help_text }}</small>{% endif %}
+            {% if form.llc_file_date.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_file_date.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.llc_accounting_year_closing_month.id_for_label }}" class="form-label">{{ form.llc_accounting_year_closing_month.label }}</label>
+            {{ form.llc_accounting_year_closing_month }}
+            {% if form.llc_accounting_year_closing_month.help_text %}<small class="form-text text-muted d-block mt-1">{{ form.llc_accounting_year_closing_month.help_text }}</small>{% endif %}
+            {% if form.llc_accounting_year_closing_month.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_accounting_year_closing_month.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+    </div>
+
+    <!-- Section 4: General Business Info / Reasons -->
+    <div id="general_business_info_section" class="mb-4 p-3 border rounded">
+        <h5>4. Business Details & Reason for EIN</h5>
+        <div class="mb-3">
+            <label for="{{ form.business_start_date.id_for_label }}" class="form-label">{{ form.business_start_date.label }}</label>
+            {{ form.business_start_date }}
+            {% if form.business_start_date.help_text %}<small class="form-text text-muted d-block mt-1">{{ form.business_start_date.help_text }}</small>{% endif %}
+            {% if form.business_start_date.errors %}<div class="invalid-feedback d-block">{% for error in form.business_start_date.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.reason_for_ein.id_for_label }}" class="form-label">{{ form.reason_for_ein.label }}</label>
+            {{ form.reason_for_ein }}
+            {% if form.reason_for_ein.help_text %}<small class="form-text text-muted d-block mt-1">{{ form.reason_for_ein.help_text }}</small>{% endif %}
+            {% if form.reason_for_ein.errors %}<div class="invalid-feedback d-block">{% for error in form.reason_for_ein.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+        <div id="other_reason_text_section" class="mb-3" style="display: none;"> <!-- Initially hidden, JS will show if 'Other' reason -->
+            <label for="{{ form.other_reason_text.id_for_label }}" class="form-label">{{ form.other_reason_text.label|default:"Please specify other reason:" }}</label>
+            {{ form.other_reason_text }}
+            {% if form.other_reason_text.errors %}<div class="invalid-feedback d-block">{% for error in form.other_reason_text.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+    </div>
+
+    <!-- Section 5: Business Activity Questions -->
+    <div id="business_activity_section" class="mb-4 p-3 border rounded">
+        <h5>5. Business Activities & Operations</h5>
+        
+        <!-- Highway Vehicle Question -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.owns_highway_vehicle_55k_lbs.label }}</label>
+            <div>
+                {% for radio in form.owns_highway_vehicle_55k_lbs %}
+                    <div class="form-check form-check-inline">
+                        {{ radio.tag }}
+                        <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if form.owns_highway_vehicle_55k_lbs.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.owns_highway_vehicle_55k_lbs.help_text }}</small>
+            {% endif %}
+            {% if form.owns_highway_vehicle_55k_lbs.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.owns_highway_vehicle_55k_lbs.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Gambling Question -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.involves_gambling_wagering.label }}</label>
+            <div>
+                {% for radio in form.involves_gambling_wagering %}
+                    <div class="form-check form-check-inline">
+                        {{ radio.tag }}
+                        <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if form.involves_gambling_wagering.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.involves_gambling_wagering.help_text }}</small>
+            {% endif %}
+            {% if form.involves_gambling_wagering.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.involves_gambling_wagering.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Form 720 Question -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.needs_to_file_form_720.label }}</label>
+            <div>
+                {% for radio in form.needs_to_file_form_720 %}
+                    <div class="form-check form-check-inline">
+                        {{ radio.tag }}
+                        <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if form.needs_to_file_form_720.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.needs_to_file_form_720.help_text }}</small>
+            {% endif %}
+            {% if form.needs_to_file_form_720.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.needs_to_file_form_720.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Alcohol/Tobacco/Firearms Question -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.sells_alcohol_tobacco_firearms.label }}</label>
+            <div>
+                {% for radio in form.sells_alcohol_tobacco_firearms %}
+                    <div class="form-check form-check-inline">
+                        {{ radio.tag }}
+                        <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if form.sells_alcohol_tobacco_firearms.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.sells_alcohol_tobacco_firearms.help_text }}</small>
+            {% endif %}
+            {% if form.sells_alcohol_tobacco_firearms.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.sells_alcohol_tobacco_firearms.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- W2 Employees Question -->
+        <div class="mb-3">
+            <label class="form-label">{{ form.expects_employees_w2_next_12_months.label }}</label>
+            <div>
+                {% for radio in form.expects_employees_w2_next_12_months %}
+                    <div class="form-check form-check-inline">
+                        {{ radio.tag }}
+                        <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if form.expects_employees_w2_next_12_months.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.expects_employees_w2_next_12_months.help_text }}</small>
+            {% endif %}
+            {% if form.expects_employees_w2_next_12_months.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.expects_employees_w2_next_12_months.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.primary_business_activity.id_for_label }}" class="form-label">{{ form.primary_business_activity.label }}</label>
+            {{ form.primary_business_activity }}
+            {% if form.primary_business_activity.help_text %}<small class="form-text text-muted d-block mt-1">{{ form.primary_business_activity.help_text }}</small>{% endif %}
+            {% if form.primary_business_activity.errors %}<div class="invalid-feedback d-block">{% for error in form.primary_business_activity.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+
+        <!-- Other Business Activity Field (Conditional) -->
+        <div id="other_business_activity_section" class="mb-3" style="display: none;">
+            <label for="{{ form.other_business_activity.id_for_label }}" class="form-label">{{ form.other_business_activity.label }}</label>
+            {{ form.other_business_activity }}
+            {% if form.other_business_activity.errors %}<div class="invalid-feedback d-block">{% for error in form.other_business_activity.errors %}{{ error }}{% endfor %}</div>{% endif %}
+        </div>
+    </div>
+    
+    <!-- Section 6: Agreements -->
+    <div id="agreements_section" class="mb-4 p-3 border rounded">
+        <h5>6. Agreement and Signature</h5>
+        
+        <div class="mb-3">
+            <p class="small text-muted">
+                With my digital signature, (i) I represent and warrant that all of the information provided above is accurate and complete; 
+                (ii) I agree that I have carefully read and agree to be bound by the Terms of Service, Refund Policy, and Privacy Policy (see below) 
+                and (iii) I have read and understand that I am hereby authorizing Business Compliance Organization NC LLC as a "Third Party Designee" 
+                as described in the instructions to Form SS-4 to apply to the IRS for the Employer Identification Number of the person or entity listed above, 
+                answer any questions on my behalf or the behalf of the entity listed above about the completion of Form SS-4, and to receive and deliver to me the Employer Identification Number for me or the entity listed above.
+            </p>
+        </div>
+
+        <div class="mb-3">
+            <p class="small text-muted">
+                I agree to the terms & conditions and authorize this payment to Business Compliance Organization NC LLC. 
+                I hereby certify that the information above is correct and that I am authorized to conduct this transaction.
+            </p>
+        </div>
+
+        <div class="mb-3">
+            <p class="small text-muted">
+                I have read, understand, and agree to be bound by the 
+                <a href="#" data-bs-toggle="modal" data-bs-target="#refundPolicyModal">Refund Policy</a>, 
+                <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal">Privacy Policy</a>, and 
+                <a href="#" data-bs-toggle="modal" data-bs-target="#termsOfServiceModal">Terms of Service</a>. 
+                I am aware that all payments are final, with the exceptions specified in the return policy.
+            </p>
+        </div>
+
+        <div class="form-check mb-3">
+            {{ form.agrees_to_terms_digital_signature }}
+            <label class="form-check-label" for="{{ form.agrees_to_terms_digital_signature.id_for_label }}">
+                I've read and accept the terms and conditions.
+            </label>
+            {% if form.agrees_to_terms_digital_signature.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.agrees_to_terms_digital_signature.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.client_signature_text.id_for_label }}" class="form-label">Client Agreement & Signature</label>
+            {{ form.client_signature_text }}
+            {% if form.client_signature_text.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.client_signature_text.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+            <div class="alert alert-info small mt-2">
+                By typing your name above, you are digitally signing this application and affirming all statements and agreements.
+            </div>
+        </div>
+    </div>
+
+</div> <!-- closing container-fluid -->
+
+<script>
+// Basic JS for conditional logic (can be expanded)
+document.addEventListener('DOMContentLoaded', function () {
+    const legalStructureSelect = document.getElementById('{{ form.ein_legal_structure.id_for_label }}');
+    const llcDetailsSection = document.getElementById('llc_details_section');
+    const partnershipSection = document.getElementById('partnership_section');
+    const corporationSection = document.getElementById('corporation_section');
+    const partnershipRadios = document.querySelectorAll('[name="{{ form.partnership_type.name }}"]');
+    const corporationRadios = document.querySelectorAll('[name="{{ form.corporation_type.name }}"]');
+    const partnershipDescriptions = document.querySelectorAll('.partnership-descriptions > div');
+    const corporationDescriptions = document.querySelectorAll('.corporation-descriptions > div');
+    const reasonForEinSelect = document.getElementById('{{ form.reason_for_ein.id_for_label }}');
+    const otherReasonTextSection = document.getElementById('other_reason_text_section');
+    const otherReasonTextArea = document.getElementById('{{ form.other_reason_text.id_for_label }}');
+    const hasDifferentMailingAddressRadios = document.querySelectorAll('[name="{{ form.llc_has_different_mailing_address.name }}"]');
+    const llcMailingAddressSection = document.getElementById('llc_mailing_address_section');
+    const primaryBusinessActivitySelect = document.getElementById('{{ form.primary_business_activity.id_for_label }}');
+    const otherBusinessActivitySection = document.getElementById('other_business_activity_section');
+    const otherBusinessActivityInput = document.getElementById('{{ form.other_business_activity.id_for_label }}');
+
+    function togglePartnershipDescription() {
+        partnershipDescriptions.forEach(desc => {
+            desc.style.display = 'none';
+        });
+        
+        partnershipRadios.forEach(radio => {
+            if (radio.checked) {
+                const selectedType = radio.value;
+                const description = document.querySelector(`[data-type="${selectedType}"]`);
+                if (description) {
+                    description.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    function toggleCorporationDescription() {
+        corporationDescriptions.forEach(desc => {
+            desc.style.display = 'none';
+        });
+        
+        corporationRadios.forEach(radio => {
+            if (radio.checked) {
+                const selectedType = radio.value;
+                const description = document.querySelector(`[data-type="${selectedType}"]`);
+                if (description) {
+                    description.style.display = 'block';
+                }
+            }
+        });
+    }
+
+    function toggleLegalStructureSections() {
+        if (legalStructureSelect) {
+            const selectedValue = legalStructureSelect.value;
+            
+            // Hide all sections first
+            if (llcDetailsSection) llcDetailsSection.style.display = 'none';
+            if (partnershipSection) partnershipSection.style.display = 'none';
+            if (corporationSection) corporationSection.style.display = 'none';
+            
+            // Show relevant section based on selection
+            switch(selectedValue) {
+                case 'LLC':
+                    if (llcDetailsSection) llcDetailsSection.style.display = 'block';
+                    break;
+                case 'PARTNERSHIP':
+                    if (partnershipSection) partnershipSection.style.display = 'block';
+                    break;
+                case 'CORPORATION':
+                    if (corporationSection) corporationSection.style.display = 'block';
+                    break;
+            }
+        }
+    }
+
+    function toggleOtherReason() {
+        if (reasonForEinSelect && otherReasonTextSection) {
+            if (reasonForEinSelect.value === 'OTHER') {
+                otherReasonTextSection.style.display = 'block';
+            } else {
+                otherReasonTextSection.style.display = 'none';
+                if (otherReasonTextArea) otherReasonTextArea.value = ''; // Clear if hidden
+            }
+        }
+    }
+
+    function toggleLLCMailingAddress() {
+        if (llcMailingAddressSection) {
+            let selectedValue = null;
+            hasDifferentMailingAddressRadios.forEach(radio => {
+                if (radio.checked) {
+                    selectedValue = radio.value;
+                }
+            });
+            if (selectedValue === 'True') {
+                llcMailingAddressSection.style.display = 'block';
+            } else {
+                llcMailingAddressSection.style.display = 'none';
+            }
+        }
+    }
+
+    function toggleOtherBusinessActivity() {
+        if (primaryBusinessActivitySelect && otherBusinessActivitySection) {
+            if (primaryBusinessActivitySelect.value === 'OTHER_SERVICES') {
+                otherBusinessActivitySection.style.display = 'block';
+            } else {
+                otherBusinessActivitySection.style.display = 'none';
+                if (otherBusinessActivityInput) otherBusinessActivityInput.value = ''; // Clear if hidden
+            }
+        }
+    }
+    
+    if (legalStructureSelect) {
+        legalStructureSelect.addEventListener('change', toggleLegalStructureSections);
+        toggleLegalStructureSections(); // Initial check
+    }
+
+    if (partnershipRadios.length > 0) {
+        partnershipRadios.forEach(radio => {
+            radio.addEventListener('change', togglePartnershipDescription);
+        });
+        togglePartnershipDescription(); // Initial check
+    }
+
+    if (corporationRadios.length > 0) {
+        corporationRadios.forEach(radio => {
+            radio.addEventListener('change', toggleCorporationDescription);
+        });
+        toggleCorporationDescription(); // Initial check
+    }
+
+    if (reasonForEinSelect) {
+        reasonForEinSelect.addEventListener('change', toggleOtherReason);
+        toggleOtherReason(); // Initial check
+    }
+
+    if (hasDifferentMailingAddressRadios.length > 0) {
+        hasDifferentMailingAddressRadios.forEach(radio => {
+            radio.addEventListener('change', toggleLLCMailingAddress);
+        });
+        toggleLLCMailingAddress(); // Initial check
+    }
+
+    if (primaryBusinessActivitySelect) {
+        primaryBusinessActivitySelect.addEventListener('change', toggleOtherBusinessActivity);
+        toggleOtherBusinessActivity(); // Initial check
+    }
+});
+</script>
+
+{% endblock %} 

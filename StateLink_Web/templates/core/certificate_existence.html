@@ -1,0 +1,169 @@
+{% extends 'core/service_form_base.html' %}
+
+{% block service_form_fields %}
+<div class="container-fluid">
+    <h4 class="mb-3">Certificate of Existence Request</h4>
+    <p class="mb-4">Please provide the following information to request your Certificate of Existence.</p>
+
+    <!-- Requester Information Section -->
+    <div class="mb-4 p-3 border rounded">
+        <h5>Requester Information</h5>
+        <p class="text-muted small">Please provide your contact information.</p>
+        
+        <div class="mb-3">
+            <label for="{{ form.requester_name.id_for_label }}" class="form-label">{{ form.requester_name.label }}</label>
+            {{ form.requester_name }}
+            {% if form.requester_name.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.requester_name.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.requester_address.id_for_label }}" class="form-label">{{ form.requester_address.label }}</label>
+            {{ form.requester_address }}
+            {% if form.requester_address.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.requester_address.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.requester_phone.id_for_label }}" class="form-label">{{ form.requester_phone.label }}</label>
+            {{ form.requester_phone }}
+            {% if form.requester_phone.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.requester_phone.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Business Information Section -->
+    <div class="mb-4 p-3 border rounded">
+        <h5>Business Information</h5>
+        <p class="text-muted small">Please provide your business details exactly as they appear in your formation documents.</p>
+        
+        <div class="mb-3">
+            <label for="{{ form.business_name.id_for_label }}" class="form-label">{{ form.business_name.label }}</label>
+            {{ form.business_name }}
+            {% if form.business_name.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.business_name.help_text }}</small>
+            {% endif %}
+            {% if form.business_name.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.business_name.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.file_number.id_for_label }}" class="form-label">{{ form.file_number.label }}</label>
+            {{ form.file_number }}
+            {% if form.file_number.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.file_number.help_text }}</small>
+            {% endif %}
+            {% if form.file_number.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.file_number.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Purpose Section -->
+    <div class="mb-4 p-3 border rounded">
+        <h5>Purpose and Additional Information</h5>
+        
+        <div class="mb-3">
+            <label for="{{ form.purpose.id_for_label }}" class="form-label">{{ form.purpose.label }}</label>
+            {{ form.purpose }}
+            {% if form.purpose.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.purpose.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.additional_requirements.id_for_label }}" class="form-label">{{ form.additional_requirements.label }}</label>
+            {{ form.additional_requirements }}
+            {% if form.additional_requirements.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.additional_requirements.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Agreement and Signature Section -->
+    <div class="mb-4 p-3 border rounded">
+        <h5>Agreement and Signature</h5>
+        
+        <div class="mb-3">
+            <p class="small text-muted">
+                With my digital signature, (i) I represent and warrant that all of the information provided above is accurate and complete; 
+                (ii) I agree that I have carefully read and agree to be bound by the Terms of Service, Refund Policy, and Privacy Policy (see below) 
+                and (iii) I have read and understand that I am hereby authorizing Business Compliance Organization NC LLC as a "Third Party Designee" 
+                to obtain the documents selected on my behalf using the information I provided.
+            </p>
+        </div>
+
+        <div class="mb-3">
+            <p class="small text-muted">
+                I agree to the terms & conditions and authorize this payment to Business Compliance Organization NC LLC. 
+                I hereby certify that the information above is correct and that I am authorized to conduct this transaction.
+            </p>
+        </div>
+
+        <div class="mb-3">
+            <p class="small text-muted">
+                I have read, understand, and agree to be bound by the 
+                <a href="#" data-bs-toggle="modal" data-bs-target="#refundPolicyModal">Refund Policy</a>, 
+                <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal">Privacy Policy</a>, and 
+                <a href="#" data-bs-toggle="modal" data-bs-target="#termsOfServiceModal">Terms of Service</a>. 
+                I am aware that all payments are final, with the exceptions specified in the return policy.
+            </p>
+        </div>
+
+        <div class="form-check mb-3">
+            {{ form.agrees_to_terms }}
+            <label class="form-check-label" for="{{ form.agrees_to_terms.id_for_label }}">
+                I've read and accept the terms and conditions.
+            </label>
+            {% if form.agrees_to_terms.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.agrees_to_terms.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.client_signature.id_for_label }}" class="form-label">{{ form.client_signature.label }}</label>
+            {{ form.client_signature }}
+            {% if form.client_signature.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.client_signature.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+            <div class="alert alert-info small mt-2">
+                By typing your name above, you are digitally signing this application and affirming all statements and agreements.
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info">
+        <h5 class="alert-heading">Important Information</h5>
+        <p class="mb-0">The Certificate of Existence verifies that your business is in good standing with the Secretary of State. This document is often required for:</p>
+        <ul class="mb-0 mt-2">
+            <li>Opening a business bank account</li>
+            <li>Applying for business loans</li>
+            <li>Entering into business contracts</li>
+            <li>Obtaining business licenses</li>
+            <li>Other business transactions</li>
+        </ul>
+    </div>
+</div>
+{% endblock %} 

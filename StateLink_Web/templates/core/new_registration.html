@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}New Business Registration - StateLink{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h3 mb-4">New Business Registration</h1>
+                
+                <div class="alert alert-info mb-4">
+                    <h2 class="h5 mb-2">Registration Information</h2>
+                    <p class="mb-0">
+                        Please fill out all required information for your new business registration.
+                        All fields marked with an asterisk (*) are required.
+                    </p>
+                </div>
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="h5 mb-3">Business Details</h2>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.business_name.id_for_label }}" class="form-label">Business Name *</label>
+                                {{ form.business_name }}
+                                {% if form.business_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.business_name.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Enter your desired business name exactly as you want it to appear</div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.business_type.id_for_label }}" class="form-label">Business Type *</label>
+                                    {{ form.business_type }}
+                                    {% if form.business_type.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.business_type.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.state.id_for_label }}" class="form-label">State of Formation *</label>
+                                    {{ form.state }}
+                                    {% if form.state.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.state.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.business_purpose.id_for_label }}" class="form-label">Business Purpose *</label>
+                                {{ form.business_purpose }}
+                                {% if form.business_purpose.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.business_purpose.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Describe the primary purpose of your business</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="h5 mb-3">Address Information</h2>
+                            
+                            <div class="mb-3">
+                                <label for="{{ form.principal_office_address.id_for_label }}" class="form-label">Principal Office Address *</label>
+                                {{ form.principal_office_address }}
+                                {% if form.principal_office_address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.principal_office_address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.registered_agent_name.id_for_label }}" class="form-label">Registered Agent Name *</label>
+                                {{ form.registered_agent_name }}
+                                {% if form.registered_agent_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.registered_agent_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.registered_agent_address.id_for_label }}" class="form-label">Registered Agent Address *</label>
+                                {{ form.registered_agent_address }}
+                                {% if form.registered_agent_address.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.registered_agent_address.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <h2 class="h5 mb-2">Important Information</h2>
+                        <p class="mb-0">
+                            By submitting this form, you confirm that all information provided is accurate and complete.
+                            Please ensure you have all required documentation ready before proceeding to payment.
+                            A registered agent must be available during normal business hours to receive legal documents.
+                        </p>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Continue to Payment</button>
+                        <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">Back</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

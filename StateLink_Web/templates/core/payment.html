@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment - Business Compliance Organization LLC{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">Payment</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Business Information -->
+                    <div class="mb-4">
+                        <h4>Business Information</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Business Name:</strong> {{ business.name }}</p>
+                                <p><strong>Reference Number:</strong> {{ business.reference_number }}</p>
+                                <p><strong>State:</strong> {{ business.state_code }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Business Type:</strong> {{ business.get_business_type_display }}</p>
+                                <p><strong>Principal Address:</strong> {{ business.address }}{% if business.address2 %}, {{ business.address2 }}{% endif %}, {{ business.city }}, {{ business.state_code }} {{ business.zip_code }}</p>
+                                <p><strong>Registered Agent:</strong> {{ business.registered_agent }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Service Breakdown -->
+                    <div class="mb-4">
+                        <h4>Service Breakdown</h4>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for service in bundled_services %}
+                                <tr>
+                                    <td>{{ service.name }}</td>
+                                    <td>${{ service.price }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% for request in individual_services %}
+                                <tr>
+                                    <td>{{ request.get_request_type_display }}</td>
+                                    <td>${{ request.price }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                {% if show_discount %}
+                                <tr>
+                                    <th>Subtotal</th>
+                                    <th>${{ subtotal }}</th>
+                                </tr>
+                                <tr class="table-success">
+                                    <th>10% Discount</th>
+                                    <th>-${{ discount }}</th>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <th>Total</th>
+                                    <th>${{ total_price }}</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <!-- Payment Widget Placeholder -->
+                    <div class="mb-4">
+                        <h4>Payment Method</h4>
+                        <div class="alert alert-secondary">
+                            <strong>Payment Widget Placeholder:</strong><br>
+                            <!-- Insert your payment provider's embed code or widget here -->
+                            <div id="payment-widget-placeholder" style="height: 120px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border: 1px dashed #ccc;">
+                                <span class="text-muted">[Payment provider widget goes here]</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pay Now Button -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">Pay Now</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

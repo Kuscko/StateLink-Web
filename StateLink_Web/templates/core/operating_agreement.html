@@ -1,0 +1,73 @@
+{% extends 'core/service_form_base.html' %}
+
+{% block service_form_fields %}
+<div class="alert alert-warning mb-4">
+    <p class="mb-0">
+        <strong>Important Legal Notice:</strong> This Operating Agreement is a template provided for informational purposes only and is not a substitute for legal advice. You are advised to consult with an attorney to ensure the accuracy and suitability of this agreement for your specific situation and to comply with all applicable laws. Business Compliance Organization NC LLC shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or in any way connected with the use of this agreement.
+    </p>
+</div>
+
+<div class="form-group mb-3">
+    <label for="{{ form.member_names.id_for_label }}">Member Names</label>
+    {{ form.member_names }}
+    {% if form.member_names.errors %}
+    <div class="invalid-feedback d-block">
+        {% for error in form.member_names.errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    <small class="form-text text-muted">Enter each member's name on a new line</small>
+</div>
+
+<div class="form-group mb-3">
+    <label for="{{ form.ownership_percentages.id_for_label }}">Ownership Percentages</label>
+    {{ form.ownership_percentages }}
+    {% if form.ownership_percentages.errors %}
+    <div class="invalid-feedback d-block">
+        {% for error in form.ownership_percentages.errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    <small class="form-text text-muted">Enter each member's ownership percentage on a new line (must total 100%)</small>
+</div>
+
+<div class="form-group mb-3">
+    <label for="{{ form.management_structure.id_for_label }}">Management Structure</label>
+    {{ form.management_structure }}
+    {% if form.management_structure.errors %}
+    <div class="invalid-feedback d-block">
+        {% for error in form.management_structure.errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<div class="form-group mb-3">
+    <label for="{{ form.capital_contributions.id_for_label }}">Capital Contributions</label>
+    {{ form.capital_contributions }}
+    {% if form.capital_contributions.errors %}
+    <div class="invalid-feedback d-block">
+        {% for error in form.capital_contributions.errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    <small class="form-text text-muted">Enter each member's capital contribution on a new line</small>
+</div>
+
+<div class="form-group mb-3">
+    <label for="{{ form.profit_distribution.id_for_label }}">Profit Distribution Method</label>
+    {{ form.profit_distribution }}
+    {% if form.profit_distribution.errors %}
+    <div class="invalid-feedback d-block">
+        {% for error in form.profit_distribution.errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    <small class="form-text text-muted">Describe how profits will be distributed among members</small>
+</div>
+{% endblock %} 
