@@ -49,6 +49,9 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     needs: test
+    defaults:
+      run:
+        working-directory: StateLink_Web
     
     steps:
       - uses: actions/checkout@v3
@@ -85,7 +88,6 @@ jobs:
       - name: Build and push container image
         uses: docker/build-push-action@v3
         with:
-          context: ./StateLink_Web
           push: true
           tags: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
 
