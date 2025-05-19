@@ -11,11 +11,16 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import StateLink_Web.environment_template as env # Import the environment variables, replace with 'environment.py' after filling in the missing info
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Import environment variables based on deployment
+if os.getenv('AZURE_WEBSITE_HOSTNAME'):
+    import StateLink_Web.environment_production as env
+else:
+    import StateLink_Web.environment_template as env
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -90,15 +95,7 @@ WSGI_APPLICATION = 'StateLink_Web.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    },
-    'production': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env.DATABASE_NAME,  # Name of your database
-        'USER': env.DATABASE_USER,  # Username for your database
-        'PASSWORD': env.DATABASE_PASSWORD,  # Password for your database
-        'HOST': env.DATABASE_HOST,  # Name of the service defined in docker-compose.yml
-        'PORT': env.DATABASE_PORT,  # Default port for PostgreSQL
+        'NAME': env.DATABASE_NAME,
     }
 }
 
