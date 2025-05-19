@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1234567890'
+SECRET_KEY = '8b!=39oi1q^0yzwtsc(i1f2=*pie!(1ss5-v_d043*3fk^c&$+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,9 +32,18 @@ ALLOWED_HOSTS = [
     'ncbizpay.org',
     'www.ncbizpay.org',
     'localhost',
-    '127.0.0.1'
+    '127.0.0.1',
+    'https://statelink-webapp.azurewebsites.net',
+    'https://ncbizpay.org',
+    'https://www.ncbizpay.org',
 ]
 
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = [
+    'https://statelink-webapp.azurewebsites.net',
+    'https://ncbizpay.org',
+    'https://www.ncbizpay.org',
+]
 
 # Application definition
 
