@@ -33,9 +33,6 @@ ALLOWED_HOSTS = [
     'www.ncbizpay.org',
     'localhost',
     '127.0.0.1',
-    'https://statelink-webapp.azurewebsites.net',
-    'https://ncbizpay.org',
-    'https://www.ncbizpay.org',
 ]
 
 # CSRF settings

@@ -496,7 +496,7 @@ class FederalEINForm(forms.ModelForm):
     llc_trade_name = forms.CharField(required=False, max_length=255, widget=forms.TextInput(attrs={'class': 'form-control'}), label="Trade name/Doing business as (only if different from legal name)")
     llc_county_location = forms.CharField(required=False, max_length=100, widget=forms.TextInput(attrs={'class': 'form-control'}), label="County where LLC is located")
     llc_state_of_organization = forms.ChoiceField(required=False, choices=US_STATES_TERRITORIES_CHOICES, widget=forms.Select(attrs={'class': 'form-select'}), label="State/Territory where articles of organization are (or will be) filed")
-    llc_file_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), label="LLC file date with State (e.g., Sunbiz)")
+    llc_file_date = forms.DateField(required=False, widget=forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}), label="LLC file date with State")
     llc_accounting_year_closing_month = forms.ChoiceField(required=False, choices=ACCOUNTING_YEAR_MONTHS, widget=forms.Select(attrs={'class': 'form-select'}), label="Closing month of accounting year")
 
     # Section 4: General Business Info / Reasons
@@ -596,7 +596,7 @@ class FederalEINForm(forms.ModelForm):
             if field_name == 'rp_ssn_itin':
                 field.label = "Please provide your SSN or ITIN (# only, no dashes)"
             if field_name == 'llc_file_date':
-                field.label = "LLC file date with State (e.g., Sunbiz mm/dd/yyyy)" # Kept Sunbiz example for context as per user text
+                field.label = "LLC file date with State"
             if field_name == 'llc_accounting_year_closing_month':
                 field.label = "Closing month of accounting year (most common business closing month is December)"
             if field_name == 'ein_legal_structure':

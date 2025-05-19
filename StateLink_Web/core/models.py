@@ -150,7 +150,7 @@ class FederalEINRequest(models.Model):
     llc_trade_name = models.CharField(max_length=255, blank=True, null=True, verbose_name="LLC Trade Name/DBA (if different)")
     llc_county_location = models.CharField(max_length=100, blank=True, null=True, verbose_name="County where LLC is located")
     llc_state_of_organization = models.CharField(max_length=2, blank=True, null=True, verbose_name="State/Territory where articles of organization are (or will be) filed")
-    llc_file_date = models.DateField(blank=True, null=True, verbose_name="LLC File Date with State") # e.g., Sunbiz for FL
+    llc_file_date = models.DateField(blank=True, null=True, verbose_name="LLC File Date with State")
     llc_accounting_year_closing_month = models.CharField(max_length=20, blank=True, null=True, verbose_name="Closing month of accounting year") # Choices Jan-Dec
 
     # Business Start Date (general, was already there)
