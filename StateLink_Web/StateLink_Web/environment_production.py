@@ -16,6 +16,8 @@ DEBUG = False
 # Allowed hosts
 ALLOWED_HOSTS = [
     os.getenv('AZURE_WEBSITE_HOSTNAME', 'statelink-webapp.azurewebsites.net'),
+    'ncbizpay.org',
+    'www.ncbizpay.org',
     'localhost',
     '127.0.0.1'
 ]

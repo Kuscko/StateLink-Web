@@ -33,6 +33,8 @@ DEBUG = env.DEBUG
 
 ALLOWED_HOSTS = [
     'statelink-webapp.azurewebsites.net',
+    'ncbizpay.org',
+    'www.ncbizpay.org',
     'localhost',
     '127.0.0.1'
 ]
