@@ -2,13 +2,14 @@ name: Deploy to Azure Web App
 
 on:
   push:
-    branches:
-      - main  # or your default branch
+    branches: [ main ]
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: your-app-name    # Replace with your app name
-  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+  AZURE_WEBAPP_NAME: statelink-webapp
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
+  DOCKER_REGISTRY: statelinkregistry.azurecr.io
+  DOCKER_IMAGE_NAME: statelink
   PYTHON_VERSION: '3.9'
 
 jobs:
@@ -17,33 +18,37 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: ${{ env.PYTHON_VERSION }}
-    
-    - name: Create and start virtual environment
-      run: |
-        python -m venv venv
-        source venv/bin/activate
-    
-    - name: Install dependencies
-      run: pip install -r StateLink_Web/requirements.txt
-    
-    - name: Run tests
-      run: |
-        cd StateLink_Web
-        python manage.py test
 
-    - name: Login to Azure
-      uses: azure/login@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        login-server: ${{ env.DOCKER_REGISTRY }}
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: Build and push container image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+        cache-from: type=registry,ref=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache
+        cache-to: type=registry,ref=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:buildcache,mode=max
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ env.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: StateLink_Web/ 
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        images: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
+
+    - name: Azure logout
+      run: az logout 

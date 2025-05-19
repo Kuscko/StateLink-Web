@@ -18,7 +18,12 @@ DEBUG=True
 
 # Allowed hosts
 # DO NOT LEAVE '*' IN PRODUCTION
-ALLOWED_HOSTS=['*']
+ALLOWED_HOSTS=[
+    'your-domain.com',
+    'www.your-domain.com',
+    'subdomain.your-domain.com',
+    'statelink-webapp.azurewebsites.net'
+]
 
 # Database settings
 DATABASE_NAME='' # Name of your database
