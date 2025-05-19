@@ -82,5 +82,7 @@ jobs:
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           images: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
 
-      - name: Azure logout
-        run: az logout 
+      - name: Cleanup
+        if: always()
+        run: |
+          docker logout ${{ env.DOCKER_REGISTRY }} || true 
