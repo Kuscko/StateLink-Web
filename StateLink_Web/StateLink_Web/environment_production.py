@@ -14,7 +14,11 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 DEBUG = False
 
 # Allowed hosts
-ALLOWED_HOSTS = [os.getenv('AZURE_WEBSITE_HOSTNAME', '')]
+ALLOWED_HOSTS = [
+    os.getenv('AZURE_WEBSITE_HOSTNAME', 'statelink-webapp.azurewebsites.net'),
+    'localhost',
+    '127.0.0.1'
+]
 
 # Database settings - Using SQLite3
 DATABASE_NAME = BASE_DIR / 'db.sqlite3'

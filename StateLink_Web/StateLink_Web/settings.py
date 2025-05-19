@@ -32,9 +32,9 @@ SECRET_KEY = env.SECRET_KEY
 DEBUG = env.DEBUG
 
 ALLOWED_HOSTS = [
-    'ncbizpay.org',
-    'www.ncbizpay.org',
-    'statelink-webapp.azurewebsites.net'
+    'statelink-webapp.azurewebsites.net',
+    'localhost',
+    '127.0.0.1'
 ]
 
 
