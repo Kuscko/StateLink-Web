@@ -71,10 +71,9 @@ jobs:
       - name: Build and push container image
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: ./StateLink_Web
           push: true
           tags: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }}:${{ github.sha }}
-          file: ./Dockerfile
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
