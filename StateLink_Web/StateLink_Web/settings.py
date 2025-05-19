@@ -17,19 +17,15 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Import environment variables based on deployment
-if os.getenv('AZURE_WEBSITE_HOSTNAME'):
-    import StateLink_Web.environment_production as env
-else:
-    import StateLink_Web.environment_template as env
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.SECRET_KEY
+SECRET_KEY = 'django-insecure-1234567890'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.DEBUG
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'statelink-webapp.azurewebsites.net',
@@ -101,7 +97,7 @@ WSGI_APPLICATION = 'StateLink_Web.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': env.DATABASE_NAME,
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
