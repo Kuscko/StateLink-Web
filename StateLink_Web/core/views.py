@@ -102,13 +102,12 @@ class ComplianceRequestView(FormView):
         subtotal = sum(prices.get(service, Decimal('0')) for service in selected_services)
         
         # Calculate discount if all services are selected
-        discount = Decimal('0')
+        discount = Decimal('49.90')
+        total = Decimal('0')
         if business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(service in selected_services for service in all_services):
-                discount = subtotal * Decimal('0.1')  # 10% discount
-        
-        total = subtotal - discount
+                total = subtotal - discount
         
         context.update({
             'subtotal': subtotal,
@@ -145,13 +144,11 @@ class ComplianceRequestView(FormView):
         subtotal = sum(prices.get(service, Decimal('0')) for service in services)
         
         # Calculate discount if all services are selected
-        discount = Decimal('0')
+        discount = Decimal('49.90')
         if business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(service in services for service in all_services):
-                discount = subtotal * Decimal('0.1')  # 10% discount
-        
-        total = subtotal - discount
+                total = subtotal - discount
         
         for service in services:
             if service == 'LABOR_LAW_POSTER_CERT':
@@ -271,13 +268,11 @@ class PaymentView(FormView):
         subtotal += sum(request.price or Decimal('0') for request in individual_services)
         
         # Calculate discount if all services are selected
-        discount = Decimal('0')
+        discount = Decimal('49.90')
         if compliance_request.business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if compliance_request.business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(any(r.request_type == s or (s == 'LABOR_LAW_POSTER_CERT' and (r.request_type == 'LABOR_LAW_POSTER' or r.request_type == 'CERTIFICATE_EXISTENCE')) for r in pending_requests) for s in all_services):
-                discount = subtotal * Decimal('0.1')  # 10% discount
-        
-        total_price = subtotal - discount
+                total_price = subtotal - discount
         
         context.update({
             'subtotal': subtotal,
@@ -351,13 +346,11 @@ class PaymentConfirmationView(TemplateView):
         subtotal += sum(request.price or Decimal('0') for request in individual_services)
         
         # Calculate discount if all services are selected
-        discount = Decimal('0')
+        discount = Decimal('49.90')
         if compliance_request.business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if compliance_request.business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(any(r.request_type == s or (s == 'LABOR_LAW_POSTER_CERT' and (r.request_type == 'LABOR_LAW_POSTER' or r.request_type == 'CERTIFICATE_EXISTENCE')) for r in pending_requests) for s in all_services):
-                discount = subtotal * Decimal('0.1')  # 10% discount
-        
-        total_price = subtotal - discount
+                total_price = subtotal - discount
         
         context.update({
             'user_email': payment_info.get('user_email'),
