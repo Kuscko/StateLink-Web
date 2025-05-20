@@ -145,6 +145,7 @@ class ComplianceRequestView(FormView):
         
         # Calculate discount if all services are selected
         discount = Decimal('49.90')
+        total = Decimal('0')
         if business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(service in services for service in all_services):
@@ -269,6 +270,7 @@ class PaymentView(FormView):
         
         # Calculate discount if all services are selected
         discount = Decimal('49.90')
+        total_price = Decimal('0')
         if compliance_request.business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if compliance_request.business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(any(r.request_type == s or (s == 'LABOR_LAW_POSTER_CERT' and (r.request_type == 'LABOR_LAW_POSTER' or r.request_type == 'CERTIFICATE_EXISTENCE')) for r in pending_requests) for s in all_services):
@@ -347,6 +349,7 @@ class PaymentConfirmationView(TemplateView):
         
         # Calculate discount if all services are selected
         discount = Decimal('49.90')
+        total_price = Decimal('0')
         if compliance_request.business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if compliance_request.business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(any(r.request_type == s or (s == 'LABOR_LAW_POSTER_CERT' and (r.request_type == 'LABOR_LAW_POSTER' or r.request_type == 'CERTIFICATE_EXISTENCE')) for r in pending_requests) for s in all_services):
