@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +11,8 @@
     <!-- Custom CSS -->
     <style>
         .navbar-brand {
-            font-weight: bold;
+            height: 5rem; /* Set a specific height for the logo */
+            width: auto; /* Maintain aspect ratio */
         }
         .main-content {
             min-height: calc(100vh - 160px);
@@ -34,17 +37,9 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'core:home' %}">NC StateLink</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:home' %}">Home</a>
-                    </li>
-                </ul>
-            </div>
+            <a href="{% url 'core:home' %}" class="navbar-brand">
+                <img class="navbar-brand me-2" src="{% static 'images/NC_Logo.png' %}" alt="NC StateLink Logo">
+            </a>
         </div>
     </nav>
 
@@ -69,7 +64,7 @@
         <div class="container">
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <p class="mb-0">&copy; {% now "Y" %} Business Compliance Organization NC LLC. All rights reserved.</p>
+                    <p class="mb-0">&copy; {% now "Y" %} Business Compliance Organization NC. All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <a href="#" class="text-decoration-none me-3" data-bs-toggle="modal" data-bs-target="#refundPolicyModal">Refund Policy</a>
@@ -102,7 +97,7 @@
                     <p>Last updated: {% now "F j, Y" %}</p>
                     
                     <h4>1. Introduction</h4>
-                    <p>Business Compliance Organization NC LLC ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy outlines our practices concerning the collection, use, and disclosure of your information when you utilize our North Carolina business compliance services, including the preparation and filing of government forms and processing of payments.</p>
+                    <p>Business Compliance Organization NC ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy outlines our practices concerning the collection, use, and disclosure of your information when you utilize our North Carolina business compliance services, including the preparation and filing of government forms and processing of payments.</p>
 
                     <h4>2. Information We Collect</h4>
                     <p>To provide our services, we collect various types of information, including:</p>
@@ -176,7 +171,7 @@
 
                     <h4>11. Contact Us</h4>
                     <p>If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:</p>
-                    <p>Business Compliance Organization NC LLC<br>Email: <a href="mailto:support@ncbizpay.org">support@ncbizpay.org</a></p>
+                    <p>Business Compliance Organization NC<br>Email: <a href="mailto:support@ncbizpay.org">support@ncbizpay.org</a></p>
                     <!-- Include physical address and phone number if appropriate -->
                 </div>
                 <div class="modal-footer">
@@ -198,7 +193,7 @@
                     <p>Last updated: {% now "F j, Y" %}</p>
 
                     <h4>1. Acceptance of Terms</h4>
-                    <p>By accessing or using the services ("Services") provided by Business Compliance Organization NC LLC ("we," "our," or "us"), including but not limited to our website and related business filing and compliance assistance for North Carolina entities, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not use our Services.</p>
+                    <p>By accessing or using the services ("Services") provided by Business Compliance Organization NC ("we," "our," or "us"), including but not limited to our website and related business filing and compliance assistance for North Carolina entities, you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not use our Services.</p>
 
                     <h4>2. Service Description</h4>
                     <h6 class="mt-3">2.1 Nature of Services</h6>
@@ -208,7 +203,7 @@
                     <p>You are solely responsible for the accuracy, completeness, and legality of all information you provide to us for the preparation and filing of any documents. We will use the information you provide to complete the forms. You agree to review all documents for accuracy before submission or authorizing us to submit them on your behalf.</p>
 
                     <h6 class="mt-3">2.3 No Legal, Financial, or Tax Advice</h6>
-                    <p>Business Compliance Organization NC LLC is not a law firm or an accounting firm, and our employees are not attorneys or accountants. We do not provide legal, financial, or tax advice. The information and services provided are for informational and general guidance purposes only and should not be a substitute for consultation with a licensed attorney or financial/tax professional. We recommend that you consult with qualified professionals for advice tailored to your specific situation.</p>
+                    <p>Business Compliance Organization NC is not a law firm or an accounting firm, and our employees are not attorneys or accountants. We do not provide legal, financial, or tax advice. The information and services provided are for informational and general guidance purposes only and should not be a substitute for consultation with a licensed attorney or financial/tax professional. We recommend that you consult with qualified professionals for advice tailored to your specific situation.</p>
 
                     <h4>3. User Accounts and Responsibilities</h4>
                     <h6 class="mt-3">3.1 Account Creation and Security</h6>
@@ -237,16 +232,16 @@
                     <p>Our refund policy is detailed separately. Generally, service fees are non-refundable once we have commenced work on your request or submitted documents on your behalf, unless otherwise specified in our Refund Policy. Government filing fees are non-refundable once paid to the government agency, regardless of the outcome of the filing.</p>
 
                     <h4>5. Intellectual Property</h4>
-                    <p>All content, features, and functionality on our website and within our Services, including text, graphics, logos, and software, are the exclusive property of Business Compliance Organization NC LLC or its licensors and are protected by copyright, trademark, and other intellectual property laws. You may not use, reproduce, or distribute any content from our Services without our prior written permission.</p>
+                    <p>All content, features, and functionality on our website and within our Services, including text, graphics, logos, and software, are the exclusive property of Business Compliance Organization NC or its licensors and are protected by copyright, trademark, and other intellectual property laws. You may not use, reproduce, or distribute any content from our Services without our prior written permission.</p>
 
                     <h4>6. Disclaimer of Warranties</h4>
                     <p>OUR SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT ANY WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE SERVICES WILL BE ERROR-FREE, UNINTERRUPTED, SECURE, OR THAT DEFECTS WILL BE CORRECTED. WE MAKE NO WARRANTIES REGARDING THE ACCURACY, RELIABILITY, OR COMPLETENESS OF ANY INFORMATION PROVIDED THROUGH THE SERVICES. WE DO NOT GUARANTEE THAT ANY FILINGS MADE ON YOUR BEHALF WILL BE ACCEPTED OR APPROVED BY THE RELEVANT GOVERNMENT AGENCY, AS SUCH DECISIONS ARE AT THE SOLE DISCRETION OF THE AGENCY. DELAYS IN PROCESSING BY GOVERNMENT AGENCIES ARE BEYOND OUR CONTROL.</p>
 
                     <h4>7. Limitation of Liability</h4>
-                    <p>TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL BUSINESS COMPLIANCE ORGANIZATION NC LLC, ITS AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM (I) YOUR ACCESS TO OR USE OF OR INABILITY TO ACCESS OR USE THE SERVICES; (II) ANY CONDUCT OR CONTENT OF ANY THIRD PARTY ON THE SERVICES; (III) ANY CONTENT OBTAINED FROM THE SERVICES; (IV) ANY DELAYS, ERRORS, OR OMISSIONS BY GOVERNMENT AGENCIES; AND (V) UNAUTHORIZED ACCESS, USE, OR ALTERATION OF YOUR TRANSMISSIONS OR CONTENT, WHETHER BASED ON WARRANTY, CONTRACT, TORT (INCLUDING NEGLIGENCE), OR ANY OTHER LEGAL THEORY, WHETHER OR NOT WE HAVE BEEN INFORMED OF THE POSSIBILITY OF SUCH DAMAGE, AND EVEN IF A REMEDY SET FORTH HEREIN IS FOUND TO HAVE FAILED OF ITS ESSENTIAL PURPOSE. OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THE SERVICES OR THESE TERMS SHALL NOT EXCEED THE AMOUNT OF FEES PAID BY YOU TO US FOR THE SPECIFIC SERVICE GIVING RISE TO THE CLAIM.</p>
+                    <p>TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL Business Compliance Organization NC, ITS AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM (I) YOUR ACCESS TO OR USE OF OR INABILITY TO ACCESS OR USE THE SERVICES; (II) ANY CONDUCT OR CONTENT OF ANY THIRD PARTY ON THE SERVICES; (III) ANY CONTENT OBTAINED FROM THE SERVICES; (IV) ANY DELAYS, ERRORS, OR OMISSIONS BY GOVERNMENT AGENCIES; AND (V) UNAUTHORIZED ACCESS, USE, OR ALTERATION OF YOUR TRANSMISSIONS OR CONTENT, WHETHER BASED ON WARRANTY, CONTRACT, TORT (INCLUDING NEGLIGENCE), OR ANY OTHER LEGAL THEORY, WHETHER OR NOT WE HAVE BEEN INFORMED OF THE POSSIBILITY OF SUCH DAMAGE, AND EVEN IF A REMEDY SET FORTH HEREIN IS FOUND TO HAVE FAILED OF ITS ESSENTIAL PURPOSE. OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THE SERVICES OR THESE TERMS SHALL NOT EXCEED THE AMOUNT OF FEES PAID BY YOU TO US FOR THE SPECIFIC SERVICE GIVING RISE TO THE CLAIM.</p>
 
                     <h4>8. Indemnification</h4>
-                    <p>You agree to defend, indemnify, and hold harmless Business Compliance Organization NC LLC, its affiliates, officers, directors, employees, and agents from and against any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses (including but not limited to attorney's fees) arising from: (i) your use of and access to the Services; (ii) your violation of any term of these Terms; (iii) your violation of any third-party right, including without limitation any copyright, property, or privacy right; or (iv) any claim that information you provided caused damage to a third party or a government agency. This defense and indemnification obligation will survive these Terms and your use of the Services.</p>
+                    <p>You agree to defend, indemnify, and hold harmless Business Compliance Organization NC, its affiliates, officers, directors, employees, and agents from and against any and all claims, damages, obligations, losses, liabilities, costs or debt, and expenses (including but not limited to attorney's fees) arising from: (i) your use of and access to the Services; (ii) your violation of any term of these Terms; (iii) your violation of any third-party right, including without limitation any copyright, property, or privacy right; or (iv) any claim that information you provided caused damage to a third party or a government agency. This defense and indemnification obligation will survive these Terms and your use of the Services.</p>
 
                     <h4>9. Termination</h4>
                     <p>We reserve the right to terminate or suspend your account and access to the Services, in our sole discretion, at any time and without notice or liability, for any reason, including but not limited to your breach of these Terms.</p>
@@ -259,7 +254,7 @@
 
                     <h4>12. Contact Information</h4>
                     <p>If you have any questions about these Terms, please contact us at:</p>
-                    <p>Business Compliance Organization NC LLC<br>Email: <a href="mailto:support@ncbizpay.org">support@ncbizpay.org</a></p>
+                    <p>Business Compliance Organization NC<br>Email: <a href="mailto:support@ncbizpay.org">support@ncbizpay.org</a></p>
                      <!-- Include physical address and phone number if appropriate -->
                 </div>
                 <div class="modal-footer">

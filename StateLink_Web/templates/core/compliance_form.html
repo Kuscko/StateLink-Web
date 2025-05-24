@@ -20,8 +20,8 @@
 {% endif %}
 <div class="container-fluid mt-4">
     <div class="row">
-        <!-- Left side: Service Information -->
-        <div class="col-md-6">
+        <!-- Left side: Service Information - Hidden on mobile -->
+        <div class="col-md-6 d-none d-md-block">
             <div class="card">
                 <div class="card-header">
                     <ul class="nav nav-tabs card-header-tabs" id="serviceInfo" role="tablist">
@@ -201,6 +201,14 @@
                                                checked>
                                         <label class="form-check-label" for="id_services_{{ forloop.counter0 }}">
                                             {{ text }}
+                                            <!-- Mobile-only info icon -->
+                                            <span class="d-md-none ms-1" 
+                                                  data-bs-toggle="modal" 
+                                                  data-bs-target="#serviceInfoModal"
+                                                  data-service-type="{{ value }}"
+                                                  data-business-type="{{ business.business_type }}">
+                                                <i class="bi bi-info-circle-fill text-info" style="font-size: 1rem;"></i>
+                                            </span>
                                         </label>
                                     </div>
                                     {% endfor %}
@@ -249,9 +257,140 @@
     </div>
 </div>
 
+<!-- Service Information Modal -->
+<div class="modal fade" id="serviceInfoModal" tabindex="-1" aria-labelledby="serviceInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="serviceInfoModalLabel">Service Information</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="CORPORATE_BYLAWSContent" class="service-content d-none">
+                    <h4>The Legal Importance of Corporate Bylaws in North Carolina</h4>
+                    <p>In North Carolina you are legally expected to adopt them. Bylaws are the internal rules that govern how your corporation operates, including how decisions are made, how officers are appointed, and how shares are handled. Without them, your business is vulnerable to legal disputes, internal confusion, and compliance issues.</p>
+                    
+                    <h5 class="mt-3">Here's what's at stake:</h5>
+                    <ul>
+                        <li><strong>Legal Compliance:</strong> North Carolina law assumes your corporation has adopted bylaws. Without them, you may face challenges during audits, lawsuits, or when raising capital.</li>
+                        <li><strong>Internal Clarity & Control:</strong> Bylaws prevent power struggles and mismanagement by clearly defining roles, responsibilities, voting procedures, and dispute resolution.</li>
+                        <li><strong>Credibility:</strong> Banks, investors, and even vendors often ask for a copy of your bylaws before doing business. Without them, you appear disorganized and untrustworthy.</li>
+                    </ul>
+                </div>
+
+                <div id="OPERATING_AGREEMENTContent" class="service-content d-none">
+                    <h4>The Legal Importance of an Operating Agreement in North Carolina</h4>
+                    <p>In North Carolina, not having an Operating Agreement is a major legal risk. Without a written Operating Agreement, your LLC is automatically governed by default state laws. These laws are broad, generic, and may not reflect how you actually want your business to operate. Worse, they offer no protection in internal disputes, and courts may even question the legitimacy of your LLC if there's no formal agreement in place.</p>
+                    
+                    <h5 class="mt-3">Here's what's at stake:</h5>
+                    <ul>
+                        <li><strong>Limited Liability Protection:</strong> Without an Operating Agreement, courts can "pierce the corporate veil"—putting your personal assets at risk.</li>
+                        <li><strong>Ownership & Control:</strong> North Carolina default laws don't account for your unique business structure. Without a written agreement, disagreements among members can become legal nightmares.</li>
+                        <li><strong>Banking & Compliance:</strong> Most banks require an Operating Agreement to open a business account. You'll also need one to show investors or lenders that your business is legally sound.</li>
+                    </ul>
+                </div>
+
+                <div id="FEDERAL_EINContent" class="service-content d-none">
+                    <h4>Why You Need an Employer Identification Number (EIN)</h4>
+                    <p>An Employer Identification Number (EIN), also known as a Federal Tax Identification Number, is essential for legally operating and growing your business in the United States. It acts as your business's unique ID for federal tax purposes and is a requirement for many business activities.</p>
+                    
+                    <h5 class="mt-3">Legal Requirement for Many Businesses</h5>
+                    <p>An EIN is mandatory if you:</p>
+                    <ul>
+                        <li>Operate as a corporation, partnership, or multi-member LLC</li>
+                        <li>Hire employees or plan to in the near future</li>
+                        <li>File business tax returns or pay excise, employment, or other federal taxes</li>
+                        <li>Open a retirement plan for your business</li>
+                        <li>Work with vendors or financial institutions requiring federal ID</li>
+                    </ul>
+                </div>
+
+                <div id="LABOR_LAW_POSTER_CERTContent" class="service-content d-none">
+                    <h4>Stay Compliant with North Carolina Labor Law Posting Requirements</h4>
+                    <p>Labor law compliance isn't optional—it's a legal obligation for every employer in North Carolina. Both federal and state regulations require that businesses visibly display up-to-date labor law posters in the workplace to inform employees of their rights. Failing to do so can result in costly penalties and unwanted scrutiny.</p>
+                    
+                    <h5 class="mt-3">What's Required in North Carolina</h5>
+                    <p>In North Carolina, employers must display a combination of federal and state-mandated posters covering critical employee rights and protections, including:</p>
+                    <ul>
+                        <li>Wage and hour laws (minimum wage, overtime)</li>
+                        <li>Workers' compensation and unemployment insurance</li>
+                        <li>Workplace safety (OSHA)</li>
+                        <li>Anti-discrimination laws (EEOC)</li>
+                        <li>Family and medical leave rights</li>
+                        <li>State-specific employment laws</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% block extra_js %}
+<!-- Add Bootstrap Icons CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Handle service info modal
+    const serviceInfoModal = document.getElementById('serviceInfoModal');
+    const modalTitle = document.getElementById('serviceInfoModalLabel');
+    const infoIcons = document.querySelectorAll('[data-bs-toggle="modal"]');
+    
+    // Service titles mapping
+    const serviceTitles = {
+        'CORPORATE_BYLAWS': 'Corporate Bylaws Information',
+        'OPERATING_AGREEMENT': 'Operating Agreement Information',
+        'FEDERAL_EIN': 'Federal EIN Information',
+        'LABOR_LAW_POSTER_CERT': 'Labor Law Posters Information'
+    };
+
+    // Initialize the modal
+    const modal = new bootstrap.Modal(serviceInfoModal);
+    
+    // Handle modal hidden event to clean up
+    serviceInfoModal.addEventListener('hidden.bs.modal', function () {
+        // Remove modal backdrop
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+        // Remove modal-open class from body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+    });
+    
+    infoIcons.forEach(icon => {
+        icon.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const serviceType = this.dataset.serviceType;
+            const businessType = this.dataset.businessType;
+            
+            // Update modal title
+            modalTitle.textContent = serviceTitles[serviceType] || 'Service Information';
+            
+            // Hide all content sections first
+            document.querySelectorAll('.service-content').forEach(content => {
+                content.classList.add('d-none');
+            });
+            
+            // Show the appropriate content
+            const contentId = serviceType + 'Content';
+            const contentElement = document.getElementById(contentId);
+            
+            if (contentElement) {
+                contentElement.classList.remove('d-none');
+                contentElement.style.display = 'block';
+            }
+            
+            // Show the modal
+            modal.show();
+        });
+    });
+
     const checkboxes = document.querySelectorAll('.service-checkbox');
     const subtotalElement = document.getElementById('subtotal');
     const discountElement = document.getElementById('discount');

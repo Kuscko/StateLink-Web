@@ -98,62 +98,6 @@
         </div>
     </div>
 
-    <!-- Agreement and Signature Section -->
-    <div class="mb-4 p-3 border rounded">
-        <h5>Agreement and Signature</h5>
-        
-        <div class="mb-3">
-            <p class="small text-muted">
-                With my digital signature, (i) I represent and warrant that all of the information provided above is accurate and complete; 
-                (ii) I agree that I have carefully read and agree to be bound by the Terms of Service, Refund Policy, and Privacy Policy (see below) 
-                and (iii) I have read and understand that I am hereby authorizing Business Compliance Organization NC LLC as a "Third Party Designee" 
-                to obtain the documents selected on my behalf using the information I provided.
-            </p>
-        </div>
-
-        <div class="mb-3">
-            <p class="small text-muted">
-                I agree to the terms & conditions and authorize this payment to Business Compliance Organization NC LLC. 
-                I hereby certify that the information above is correct and that I am authorized to conduct this transaction.
-            </p>
-        </div>
-
-        <div class="mb-3">
-            <p class="small text-muted">
-                I have read, understand, and agree to be bound by the 
-                <a href="#" data-bs-toggle="modal" data-bs-target="#refundPolicyModal">Refund Policy</a>, 
-                <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal">Privacy Policy</a>, and 
-                <a href="#" data-bs-toggle="modal" data-bs-target="#termsOfServiceModal">Terms of Service</a>. 
-                I am aware that all payments are final, with the exceptions specified in the return policy.
-            </p>
-        </div>
-
-        <div class="form-check mb-3">
-            {{ form.agrees_to_terms }}
-            <label class="form-check-label" for="{{ form.agrees_to_terms.id_for_label }}">
-                I've read and accept the terms and conditions.
-            </label>
-            {% if form.agrees_to_terms.errors %}
-                <div class="invalid-feedback d-block">
-                    {% for error in form.agrees_to_terms.errors %}{{ error }}{% endfor %}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="mb-3">
-            <label for="{{ form.client_signature.id_for_label }}" class="form-label">{{ form.client_signature.label }}</label>
-            {{ form.client_signature }}
-            {% if form.client_signature.errors %}
-                <div class="invalid-feedback d-block">
-                    {% for error in form.client_signature.errors %}{{ error }}{% endfor %}
-                </div>
-            {% endif %}
-            <div class="alert alert-info small mt-2">
-                By typing your name above, you are digitally signing this application and affirming all statements and agreements.
-            </div>
-        </div>
-    </div>
-
     <div class="alert alert-info">
         <h5 class="alert-heading">Important Information</h5>
         <p class="mb-0">The Certificate of Existence verifies that your business is in good standing with the Secretary of State. This document is often required for:</p>

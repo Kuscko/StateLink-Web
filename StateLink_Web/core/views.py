@@ -222,7 +222,8 @@ class AnnualReportView(FormView):
         return redirect('core:payment', request_id=compliance_request.id)
 
 class PaymentForm(forms.Form):
-    pass  # No fields needed for mock/demo
+    agrees_to_terms_digital_signature = forms.BooleanField(required=True)
+    client_signature_text = forms.CharField(max_length=255)
 
 class PaymentView(FormView):
     template_name = 'core/payment.html'
@@ -288,6 +289,11 @@ class PaymentView(FormView):
     def form_valid(self, form):
         request_id = self.kwargs.get('request_id')
         compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
+        
+        # Save the agreement and signature to the compliance request
+        compliance_request.agrees_to_terms_digital_signature = form.cleaned_data['agrees_to_terms_digital_signature']
+        compliance_request.client_signature_text = form.cleaned_data['client_signature_text']
+        compliance_request.save()
         
         # Mock payment processing - in real implementation, process payment here
         # Update compliance request status
