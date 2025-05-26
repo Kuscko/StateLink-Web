@@ -351,7 +351,7 @@ class OperatingAgreementForm(forms.ModelForm):
             'rows': 3,
             'placeholder': 'Describe profit distribution method'
         })
-    )
+            )
 
     class Meta:
         model = ComplianceRequest
@@ -810,4 +810,3 @@ class PaymentForm(forms.Form):
         fields = [
             'agrees_to_terms_digital_signature', 'client_signature_text'
         ]
-        

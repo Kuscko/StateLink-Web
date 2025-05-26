@@ -94,7 +94,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'StateLink_Web.wsgi.application'
 
-
+HEARTLAND_PUBLIC_KEY = "pkapi_cert_u8yz4SQ53FmOxtDGCu"
+HEARTLAND_SECRET_KEY = "skapi_cert_MYVNBgBuRXMAadl72mh77MV9XFKLz3LzQGImOGKGhw"
+HEARTLAND_DEVELOPER_ID = "000000"
+HEARTLAND_VERSION_NUMBER = "0000"
+HEARTLAND_SERVICE_URL = "https://cert.api2.heartlandportico.com"
 
 
 # Database
@@ -169,3 +173,10 @@ RATELIMIT_BY_VIEW = True # Rate limit by view
 RATELIMIT_FAILURE = "429" # HTTP status code for rate limit failure
 RATELIMIT_SUCCESS = "200 OK" # HTTP status code for rate limit success
 RATELIMIT_RESET_ON_SUCCESS = True # Reset rate limit on success
+
+# Heartland Payment Configuration
+HEARTLAND_PUBLIC_KEY = "pkapi_cert_jKc1FtuyAydZhZfbB3"  # Replace with your public key
+HEARTLAND_SECRET_KEY = "skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A"  # Replace with your secret key
+HEARTLAND_DEVELOPER_ID = "000000"  # Replace with your developer ID
+HEARTLAND_VERSION_NUMBER = "0000"  # Replace with your version number
+HEARTLAND_SERVICE_URL = "https://cert.api2.heartlandportico.com"  # Use production URL in production
