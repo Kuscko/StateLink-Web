@@ -2,16 +2,24 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic import TemplateView, FormView
 from decimal import Decimal
-from .models import Business, ComplianceRequest
+from .models import (
+    Business, 
+    ComplianceRequest,
+    FederalEINRequest,
+    OperatingAgreementRequest,
+    CorporateBylawsRequest,
+    CertificateExistenceRequest,
+    LaborLawPosterRequest
+)
 from .forms import (
     BusinessSearchForm,
     ComplianceRequestForm,
-    BusinessRegistrationForm,
-    AnnualReportForm,
     OperatingAgreementForm,
     FederalEINForm,
     LaborLawPosterForm,
-    CertificateExistenceForm
+    CertificateExistenceForm,
+    CorporateBylawsForm,
+    PaymentForm
 )
 from django.db import models
 from django.http import JsonResponse
@@ -199,31 +207,156 @@ class ComplianceRequestView(FormView):
             return redirect('core:service_form', request_id=compliance_requests[0].id)
         return redirect('core:home')
 
-class AnnualReportView(FormView):
-    template_name = 'core/annual_report.html'
-    form_class = AnnualReportForm
+class ServiceFormView(FormView):
+    template_name = 'core/service_form_base.html'
+
+    def get_form_class(self):
+        request_id = self.kwargs.get('request_id')
+        compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
+        
+        # Map request types to form classes
+        form_map = {
+            'OPERATING_AGREEMENT': OperatingAgreementForm,
+            'CORPORATE_BYLAWS': CorporateBylawsForm,
+            'FEDERAL_EIN': FederalEINForm,
+            'LABOR_LAW_POSTER': LaborLawPosterForm,
+            'CERTIFICATE_EXISTENCE': CertificateExistenceForm,
+        }
+        
+        return form_map.get(compliance_request.request_type)
+
+    def get_template_names(self):
+        request_id = self.kwargs.get('request_id')
+        compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
+        
+        # Map request types to templates
+        template_map = {
+            'OPERATING_AGREEMENT': 'core/operating_agreement.html',
+            'CORPORATE_BYLAWS': 'core/corporate_bylaws.html',
+            'FEDERAL_EIN': 'core/federal_ein.html',
+            'LABOR_LAW_POSTER': 'core/labor_law_poster.html',
+            'CERTIFICATE_EXISTENCE': 'core/certificate_existence.html',
+        }
+        
+        return [template_map.get(compliance_request.request_type, 'core/service_form_base.html')]
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        request_id = self.kwargs.get('request_id')
+        compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
+        
+        if self.request.method in ('POST', 'PUT'):
+            # Get the related request object based on request_type
+            if compliance_request.request_type == 'FEDERAL_EIN':
+                instance = compliance_request.federal_ein_request
+            elif compliance_request.request_type == 'OPERATING_AGREEMENT':
+                instance = compliance_request.operating_agreement_request
+            elif compliance_request.request_type == 'CORPORATE_BYLAWS':
+                instance = compliance_request.corporate_bylaws_request
+            elif compliance_request.request_type == 'CERTIFICATE_EXISTENCE':
+                instance = compliance_request.certificate_existence_request
+            elif compliance_request.request_type == 'LABOR_LAW_POSTER':
+                instance = compliance_request.labor_law_poster_request
+            else:
+                instance = None
+            
+            if instance:
+                kwargs['instance'] = instance
+        
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        business_id = self.kwargs.get('business_id')
-        business = get_object_or_404(Business, id=business_id)
-        context['business'] = business
+        request_id = self.kwargs.get('request_id')
+        compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
+        context['compliance_request'] = compliance_request
+        context['business'] = compliance_request.business
+        
+        # Get all pending requests
+        request_ids = self.request.session.get('compliance_request_ids', [])
+        context['pending_requests'] = ComplianceRequest.objects.filter(id__in=request_ids)
+        context['current_request'] = compliance_request
+        
+        # Add service name to context
+        service_names = {
+            'OPERATING_AGREEMENT': 'Operating Agreement',
+            'CORPORATE_BYLAWS': 'Corporate Bylaws',
+            'FEDERAL_EIN': 'Federal EIN Application',
+            'LABOR_LAW_POSTER': 'Labor Law Poster',
+            'CERTIFICATE_EXISTENCE': 'Certificate of Existence',
+        }
+        context['service_name'] = service_names.get(compliance_request.request_type, 'Service')
+        
         return context
 
     def form_valid(self, form):
-        business_id = self.kwargs.get('business_id')
-        business = get_object_or_404(Business, id=business_id)
+        request_id = self.kwargs.get('request_id')
+        compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
         
-        compliance_request = form.save(commit=False)
-        compliance_request.business = business
-        compliance_request.request_type = 'ANNUAL_REPORT'
+        # Extract common fields from the form data
+        form_data = form.cleaned_data
+        
+        # Update compliance request with common fields
+        if 'requestor_first_name' in form_data:
+            compliance_request.applicant_first_name = form_data['requestor_first_name']
+        if 'requestor_last_name' in form_data:
+            compliance_request.applicant_last_name = form_data['requestor_last_name']
+        if 'requestor_email' in form_data:
+            compliance_request.applicant_email = form_data['requestor_email']
+        if 'requestor_phone_number' in form_data:
+            compliance_request.applicant_phone_number = form_data['requestor_phone_number']
+        if 'business_reference_number' in form_data:
+            compliance_request.applicant_reference_number = form_data['business_reference_number']
+        
+        # Save the form data to the appropriate related model
+        if compliance_request.request_type == 'FEDERAL_EIN':
+            if not compliance_request.federal_ein_request:
+                federal_ein_request = form.save()
+                compliance_request.federal_ein_request = federal_ein_request
+            else:
+                form.save()
+        elif compliance_request.request_type == 'OPERATING_AGREEMENT':
+            if not compliance_request.operating_agreement_request:
+                operating_agreement_request = form.save()
+                compliance_request.operating_agreement_request = operating_agreement_request
+            else:
+                form.save()
+        elif compliance_request.request_type == 'CORPORATE_BYLAWS':
+            if not compliance_request.corporate_bylaws_request:
+                corporate_bylaws_request = form.save()
+                compliance_request.corporate_bylaws_request = corporate_bylaws_request
+            else:
+                form.save()
+        elif compliance_request.request_type == 'CERTIFICATE_EXISTENCE':
+            if not compliance_request.certificate_existence_request:
+                certificate_existence_request = form.save()
+                compliance_request.certificate_existence_request = certificate_existence_request
+            else:
+                form.save()
+        elif compliance_request.request_type == 'LABOR_LAW_POSTER':
+            if not compliance_request.labor_law_poster_request:
+                labor_law_poster_request = form.save()
+                compliance_request.labor_law_poster_request = labor_law_poster_request
+            else:
+                form.save()
+        
+        # Update compliance request status
+        compliance_request.status = 'IN_PROGRESS'
         compliance_request.save()
         
-        return redirect('core:payment', request_id=compliance_request.id)
-
-class PaymentForm(forms.Form):
-    agrees_to_terms_digital_signature = forms.BooleanField(required=True)
-    client_signature_text = forms.CharField(max_length=255)
+        # Get remaining requests
+        request_ids = self.request.session.get('compliance_request_ids', [])
+        remaining_ids = [rid for rid in request_ids if rid != request_id]
+        
+        if remaining_ids:
+            # Redirect to next service form
+            self.request.session['compliance_request_ids'] = remaining_ids
+            return redirect('core:service_form', request_id=remaining_ids[0])
+        else:
+            # All forms completed, proceed to payment
+            # Store all request IDs in session for payment page
+            self.request.session['compliance_request_ids'] = [cr.id for cr in ComplianceRequest.objects.filter(business=compliance_request.business)]
+            return redirect('core:payment', request_id=request_id)
 
 class PaymentView(FormView):
     template_name = 'core/payment.html'
@@ -380,97 +513,6 @@ class PaymentConfirmationView(TemplateView):
             del self.request.session['payment_info']
         
         return context
-
-class ServiceFormView(FormView):
-    template_name = 'core/service_form_base.html'
-
-    def get_form_class(self):
-        request_id = self.kwargs.get('request_id')
-        compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
-        
-        # Map request types to form classes
-        form_map = {
-            'OPERATING_AGREEMENT': OperatingAgreementForm,
-            'CORPORATE_BYLAWS': OperatingAgreementForm,  # Using OperatingAgreementForm for now, should be replaced with CorporateBylawsForm
-            'FEDERAL_EIN': FederalEINForm,
-            'LABOR_LAW_POSTER': LaborLawPosterForm,
-            'CERTIFICATE_EXISTENCE': CertificateExistenceForm,
-        }
-        
-        return form_map.get(compliance_request.request_type)
-
-    def get_template_names(self):
-        request_id = self.kwargs.get('request_id')
-        compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
-        
-        # Map request types to templates
-        template_map = {
-            'OPERATING_AGREEMENT': 'core/operating_agreement.html',
-            'CORPORATE_BYLAWS': 'core/corporate_bylaws.html',
-            'FEDERAL_EIN': 'core/federal_ein.html',
-            'LABOR_LAW_POSTER': 'core/labor_law_poster.html',
-            'CERTIFICATE_EXISTENCE': 'core/certificate_existence.html',
-        }
-        
-        return [template_map.get(compliance_request.request_type, 'core/service_form_base.html')]
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        request_id = self.kwargs.get('request_id')
-        compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
-        
-        if self.request.method in ('POST', 'PUT'):
-            kwargs['instance'] = compliance_request
-        
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        request_id = self.kwargs.get('request_id')
-        compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
-        context['compliance_request'] = compliance_request
-        context['business'] = compliance_request.business
-        
-        # Get all pending requests
-        request_ids = self.request.session.get('compliance_request_ids', [])
-        context['pending_requests'] = ComplianceRequest.objects.filter(id__in=request_ids)
-        context['current_request'] = compliance_request
-        
-        # Add service name to context
-        service_names = {
-            'OPERATING_AGREEMENT': 'Operating Agreement',
-            'CORPORATE_BYLAWS': 'Corporate Bylaws',
-            'FEDERAL_EIN': 'Federal EIN Application',
-            'LABOR_LAW_POSTER': 'Labor Law Poster',
-            'CERTIFICATE_EXISTENCE': 'Certificate of Existence',
-        }
-        context['service_name'] = service_names.get(compliance_request.request_type, 'Service')
-        
-        return context
-
-    def form_valid(self, form):
-        request_id = self.kwargs.get('request_id')
-        compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
-        
-        # Update the existing compliance request with form data
-        for field, value in form.cleaned_data.items():
-            setattr(compliance_request, field, value)
-        compliance_request.save()
-        
-        # Get remaining requests
-        request_ids = self.request.session.get('compliance_request_ids', [])
-        remaining_ids = [rid for rid in request_ids if rid != request_id]
-        
-        if remaining_ids:
-            # Redirect to next service form
-            self.request.session['compliance_request_ids'] = remaining_ids
-            return redirect('core:service_form', request_id=remaining_ids[0])
-        else:
-            # All forms completed, proceed to payment
-            # Store all request IDs in session for payment page
-            self.request.session['compliance_request_ids'] = [cr.id for cr in ComplianceRequest.objects.filter(business=compliance_request.business)]
-            return redirect('core:payment', request_id=request_id)
-        
 
 class InsuranceInfoView(TemplateView):
     template_name = 'core/insurance_info.html'
