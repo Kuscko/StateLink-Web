@@ -1,8 +1,17 @@
 from django.db import models
 from django.utils import timezone
+from decimal import Decimal
+from statelink_core.registry_etl.models import Business as CoreBusiness
 
 # Create your models here.
-class Business(models.Model):
+class Business(CoreBusiness):
+    """
+    Extended Business model that inherits from the core Business model.
+    This allows us to add web-specific fields while maintaining the core functionality.
+    """
+    # Add any web-specific fields here
+    pass
+
     BUSINESS_TYPES = [
         ('CORP', 'Corporation'),
         ('LLC', 'Limited Liability Company'),
@@ -112,24 +121,71 @@ class Business(models.Model):
         return f"{self.name} ({self.get_business_type_display()}) - {self.state_code}"
 
 
+# Service Request Models
 class FederalEINRequest(models.Model):
-    price = 149.95
+    LEGAL_STRUCTURE_CHOICES = [
+        ('SOLE_PROPRIETORSHIP', 'Sole Proprietorship'),
+        ('PARTNERSHIP', 'Partnership'),
+        ('JOINT_VENTURE', 'Joint Venture'),
+        ('C_CORPORATION', 'C Corporation'),
+        ('S_CORPORATION', 'S Corporation'),
+        ('LLC', 'Limited Liability Company'),
+    ]
+
+    MONTH_CHOICES = [
+        ('JANUARY', 'January'),
+        ('FEBRUARY', 'February'),
+        ('MARCH', 'March'),
+        ('APRIL', 'April'),
+        ('MAY', 'May'),
+        ('JUNE', 'June'),
+        ('JULY', 'July'),
+        ('AUGUST', 'August'),
+        ('SEPTEMBER', 'September'),
+        ('OCTOBER', 'October'),
+        ('NOVEMBER', 'November'),
+        ('DECEMBER', 'December'),
+    ]
+
+    REASON_FOR_EIN_CHOICES = [
+        ('NEW_BUSINESS', 'New Business'),
+        ('HIRED_EMPLOYEES', 'Hired Employees'),
+        ('BANKING_PURPOSES', 'Banking Purposes'),
+        ('CHANGED_TYPE_OF_ORGANIZATION', 'Changed Type of Organization'),
+        ('PURCHASED_BUSINESS', 'Purchased Business'),
+        ('OTHER', 'Other'),
+    ]
+
+    PRIMARY_BUSINESS_ACTIVITY_CHOICES = [
+        ('ACCOMMODATION_FOOD', 'Accommodation & Food Services'),
+        ('CONSTRUCTION', 'Construction'),
+        ('REAL_ESTATE', 'Real Estate, Rental & Leasing'),
+        ('RETAIL', 'Retail'),
+        ('MANUFACTURING', 'Manufacturing'),
+        ('HEALTHCARE_SOCIAL', 'Health Care & Social Assistance'),
+        ('FINANCE_INSURANCE', 'Finance & Insurance'),
+        ('TRANSPORTATION_WAREHOUSING', 'Transportation & Warehousing'),
+        ('WHOLESALE_TRADE', 'Wholesale Trade'),
+        ('OTHER_SERVICES', 'Other Services (except Public Administration)'),
+    ]
+    
+    compliance_request = models.OneToOneField('ComplianceRequest', on_delete=models.CASCADE, related_name='federal_ein_request', null=True, blank=True)
+
+    # EIN Application Structure and Reason
+    ein_legal_structure = models.CharField(max_length=50, blank=True, null=True, verbose_name="Type of legal structure applying for EIN")
+    members_count = models.IntegerField(blank=True, null=True, verbose_name="Number of members")
 
     # Responsible Party details
     rp_first_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Responsible Party First Name")
     rp_middle_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Responsible Party Middle Name")
     rp_last_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Responsible Party Last Name")
-    rp_suffix = models.CharField(max_length=10, blank=True, null=True, verbose_name="Responsible Party Suffix") # Choices like Jr, Sr, I, II, III etc.
-    rp_ssn_itin = models.CharField(max_length=11, blank=True, null=True, verbose_name="Responsible Party SSN/ITIN") # Consider encryption
-    rp_ssn_itin_type = models.CharField(max_length=4, blank=True, null=True, verbose_name="SSN or ITIN") # Choices: SSN, ITIN
-    responsible_party_title = models.CharField(max_length=100, blank=True, null=True, verbose_name="Responsible Party Title/Position") # Existing field, keep for now
+    rp_suffix = models.CharField(max_length=10, blank=True, null=True, verbose_name="Responsible Party Suffix")
+    rp_ssn_itin = models.CharField(max_length=11, blank=True, null=True, verbose_name="Responsible Party SSN/ITIN")
+    rp_ssn_itin_type = models.CharField(max_length=4, blank=True, null=True, verbose_name="SSN or ITIN")
+    responsible_party_title = models.CharField(max_length=100, blank=True, null=True, verbose_name="Responsible Party Title/Position")
 
-    # EIN Application Structure and Reason
-    ein_legal_structure = models.CharField(max_length=50, blank=True, null=True, verbose_name="Type of legal structure applying for EIN")
-    # Sub-types or confirmations for legal structures can be added if needed, e.g., ein_sole_prop_type
-    
-    reason_for_ein = models.CharField(max_length=50, blank=True, null=True, verbose_name="Reason for requesting EIN") # Existing general reason
-    other_reason_text = models.CharField(max_length=255, blank=True, null=True, verbose_name="Other reason for EIN, if applicable") # Existing
+    reason_for_ein = models.CharField(max_length=50, blank=True, null=True, verbose_name="Reason for requesting EIN")
+    other_reason_text = models.CharField(max_length=255, blank=True, null=True, verbose_name="Other reason for EIN, if applicable")
 
     # LLC Specific Details
     llc_members_count = models.IntegerField(blank=True, null=True, verbose_name="Number of LLC Members")
@@ -151,11 +207,11 @@ class FederalEINRequest(models.Model):
     llc_county_location = models.CharField(max_length=100, blank=True, null=True, verbose_name="County where LLC is located")
     llc_state_of_organization = models.CharField(max_length=2, blank=True, null=True, verbose_name="State/Territory where articles of organization are (or will be) filed")
     llc_file_date = models.DateField(blank=True, null=True, verbose_name="LLC File Date with State")
-    llc_accounting_year_closing_month = models.CharField(max_length=20, blank=True, null=True, verbose_name="Closing month of accounting year") # Choices Jan-Dec
+    llc_accounting_year_closing_month = models.CharField(choices=MONTH_CHOICES, max_length=20, blank=True, null=True, verbose_name="Closing month of accounting year")
 
-    # Business Start Date (general, was already there)
+    # Business Start Date
     business_start_date = models.DateField(blank=True, null=True, verbose_name="Business Start Date or Acquisition Date")
-
+    
     # Specific Business Activity Questions (Yes/No)
     owns_highway_vehicle_55k_lbs = models.BooleanField(null=True, blank=True, verbose_name="Owns highway motor vehicle with taxable gross weight of 55,000 pounds or more?")
     involves_gambling_wagering = models.BooleanField(null=True, blank=True, verbose_name="Business involves gambling/wagering?")
@@ -163,86 +219,120 @@ class FederalEINRequest(models.Model):
     sells_alcohol_tobacco_firearms = models.BooleanField(null=True, blank=True, verbose_name="Business sells or manufactures alcohol, tobacco, or firearms?")
     expects_employees_w2_next_12_months = models.BooleanField(null=True, blank=True, verbose_name="Expects to have any employees who will receive Forms W-2 in the next 12 months?")
     
-    primary_business_activity = models.CharField(max_length=100, blank=True, null=True, verbose_name="Primary Business Activity")
-
-class OperatingAgreementRequest(models.Model):
-    price = 249.95
-
-    # Fields for OperatingAgreementForm
-    member_names = models.TextField(blank=True, null=True)
-
-class CorporateBylawsRequest(models.Model):
-    price = 249.95
-
-    # Fields for CorporateBylawsForm
-    corporate_officers = models.TextField(
-        verbose_name="Corporate Officers",
-        help_text="List of corporate officers with their titles",
-        blank=True,
-        null=True
-    )
-    board_of_directors = models.TextField(
-        verbose_name="Board of Directors",
-        help_text="List of board members with their positions",
-        blank=True,
-        null=True
-    )
-    authorized_shares = models.IntegerField(
-        verbose_name="Authorized Shares",
-        help_text="Total number of authorized shares",
-        blank=True,
-        null=True
-    )
-    par_value_per_share = models.DecimalField(
-        max_digits=10,
-        decimal_places=4,
-        verbose_name="Par Value Per Share",
-        help_text="Par value per share",
-        blank=True,
-        null=True
-    )
-    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+    primary_business_activity = models.CharField(choices=PRIMARY_BUSINESS_ACTIVITY_CHOICES, max_length=100, blank=True, null=True, verbose_name="Primary Business Activity")
 
     def __str__(self):
-        return f"Corporate Bylaws Request - {self.created_at.strftime('%Y-%m-%d')}"
+        return f"Federal EIN Request for {self.compliance_request.business.name if self.compliance_request else 'No Business'}"
+
+class OperatingAgreementRequest(models.Model):
+    MANAGEMENT_STRUCTURE_CHOICES = [
+        ('MEMBER_MANAGED', 'Member Managed'),
+        ('MANAGER_MANAGED', 'Manager Managed'),
+    ]
+
+    compliance_request = models.OneToOneField('ComplianceRequest', on_delete=models.CASCADE, related_name='operating_agreement_request', null=True, blank=True)
+
+    member_names = models.TextField(blank=True, null=True)
+    ownership_precentages = models.TextField(blank=True, null=True)
+    management_structure = models.TextField(choices=MANAGEMENT_STRUCTURE_CHOICES, blank=True, null=True)
+    captial_contributions = models.TextField(blank=True, null=True)
+    profit_distribution_method = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Operating Agreement Request for {self.compliance_request.business.name if self.compliance_request else 'No Business'}"
+
+class CorporateBylawsRequest(models.Model):
+    PURPOSE_OF_REQUEST_CHOICES = [
+        ('OPEN_BANKING_ACCOUNT', 'Open a bank account'),
+        ('BUSINESS_LOAN', 'Business loan'),
+        ('BUSINESS_CONTRACT', 'Business contract'),
+        ('BUSINESS_LISCENSE', 'Business liscense'),
+        ('OTHER_REASON', 'Other reason'),
+    ]
+
+    compliance_request = models.OneToOneField('ComplianceRequest', on_delete=models.CASCADE, related_name='corporate_bylaws_request', null=True, blank=True)
+
+    requestor_first_name = models.CharField(max_length=100, blank=True, null=True)
+    requestor_last_name = models.CharField(max_length=100, blank=True, null=True)
+    requestor_email = models.EmailField(max_length=254, blank=True, null=True)
+    requestor_phone_number = models.CharField(max_length=20, blank=True, null=True)
+    business_reference_number = models.CharField(max_length=100, blank=True, null=True)
+    business_name = models.CharField(max_length=255, blank=True, null=True)
+    purpose_of_request = models.CharField(choices=PURPOSE_OF_REQUEST_CHOICES, max_length=255, blank=True, null=True)
+    other_reason_text = models.CharField(max_length=255, blank=True, null=True)
+    member_names = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f"Corporate Bylaws Request for {self.compliance_request.business.name if self.compliance_request else 'No Business'}"
 
 class CertificateExistenceRequest(models.Model):
-    price = 79.95
+    PURPOSE_OF_REQUEST_CHOICES = [
+        ('OPEN_BANKING_ACCOUNT', 'Open a bank account'),
+        ('BUSINESS_LOAN', 'Business loan'),
+        ('BUSINESS_CONTRACT', 'Business contract'),
+        ('BUSINESS_LISCENSE', 'Business liscense'),
+        ('OTHER_REASON', 'Other reason'),
+    ]
 
+    compliance_request = models.OneToOneField('ComplianceRequest', on_delete=models.CASCADE, related_name='certificate_existence_request', null=True, blank=True)
 
+    requestor_first_name = models.CharField(max_length=100, blank=True, null=True)
+    requestor_last_name = models.CharField(max_length=100, blank=True, null=True)
+    requestor_email = models.EmailField(max_length=254, blank=True, null=True)
+    requestor_phone_number = models.CharField(max_length=20, blank=True, null=True)
+    business_reference_number = models.CharField(max_length=100, blank=True, null=True)
+    business_name = models.CharField(max_length=255, blank=True, null=True)
+    file_number = models.CharField(max_length=100, blank=True, null=True)
+    purpose_of_request = models.CharField(choices=PURPOSE_OF_REQUEST_CHOICES, max_length=255, blank=True, null=True)
+    other_reason_text = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"Certificate of Existence Request for {self.compliance_request.business.name if self.compliance_request else 'No Business'}"
 
 class LaborLawPosterRequest(models.Model):
-    price = 79.95
+    compliance_request = models.OneToOneField('ComplianceRequest', on_delete=models.CASCADE, related_name='labor_law_poster_request', null=True, blank=True)
 
+    requestor_first_name = models.CharField(max_length=100, blank=True, null=True)
+    requestor_last_name = models.CharField(max_length=100, blank=True, null=True)
+    requestor_email = models.EmailField(max_length=254, blank=True, null=True)
+    requestor_phone_number = models.CharField(max_length=20, blank=True, null=True)
+    business_reference_number = models.CharField(max_length=100, blank=True, null=True)
+    business_name = models.CharField(max_length=255, blank=True, null=True)
 
+    def __str__(self):
+        return f"Labor Law Poster Request for {self.compliance_request.business.name if self.compliance_request else 'No Business'}"
+
+# Compliance Request Model
 class ComplianceRequest(models.Model):
     REQUEST_TYPES = [
         ('ANNUAL_REPORT', 'Annual Report'),
         ('OPERATING_AGREEMENT', 'Operating Agreement'),
+        ('CORPORATE_BYLAWS', 'Corporate Bylaws'),
         ('FEDERAL_EIN', 'Federal EIN Application'),
         ('LABOR_LAW_POSTER', 'Labor Law Poster'),
         ('CERTIFICATE_EXISTENCE', 'Certificate of Existence'),
     ]
     
     STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
         ('IN_PROGRESS', 'In Progress'),
-        ('PAID', 'Paid'),
-        ('FULLFILLED', 'Fullfilled'),
+        ('COMPLETED', 'Completed'),
+        ('PAYMENT_PENDING', 'Payment Pending'),
     ]
 
     # Service prices mapping
     SERVICE_PRICES = {
-        'ANNUAL_REPORT': 399.95,
-        'OPERATING_AGREEMENT': 249.95,
-        'FEDERAL_EIN': 149.95,
-        'LABOR_LAW_POSTER': 149.95,  # Bundled price
-        'CERTIFICATE_EXISTENCE': 149.95,  # Bundled price
+        'ANNUAL_REPORT': Decimal('399.95'),
+        'OPERATING_AGREEMENT': Decimal('249.95'),
+        'CORPORATE_BYLAWS': Decimal('249.95'),
+        'FEDERAL_EIN': Decimal('149.95'),
+        'LABOR_LAW_POSTER': Decimal('74.98'),  # Bundled price
+        'CERTIFICATE_EXISTENCE': Decimal('74.98'),  # Bundled price
     }
     
     business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name='compliance_requests')
     request_type = models.CharField(max_length=25, choices=REQUEST_TYPES)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='IN_PROGRESS')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -254,23 +344,30 @@ class ComplianceRequest(models.Model):
     applicant_email = models.EmailField(max_length=254, blank=True, null=True, verbose_name="Applicant Email")
     applicant_phone_number = models.CharField(max_length=20, blank=True, null=True, verbose_name="Applicant Phone Number")
 
-    business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name='compliance_requests')
-
     # Agreements and Signature
     agrees_to_terms_digital_signature = models.BooleanField(null=True, blank=True, verbose_name="Agrees to terms and conditions (digital signature representation)")
     client_signature_text = models.CharField(max_length=255, blank=True, null=True, verbose_name="Client Agreement Signature (typed name)")
     
-    federal_ein_request = models.ForeignKey(FederalEINRequest, on_delete=models.CASCADE, related_name='compliance_requests', null=True, blank=True)
-    operating_agreement_request = models.ForeignKey(OperatingAgreementRequest, on_delete=models.CASCADE, related_name='compliance_requests', null=True, blank=True)
-    corporate_bylaws_request = models.ForeignKey(CorporateBylawsRequest, on_delete=models.CASCADE, related_name='compliance_requests', null=True, blank=True)
-    certificate_existence_request = models.ForeignKey(CertificateExistenceRequest, on_delete=models.CASCADE, related_name='compliance_requests', null=True, blank=True)
-    labor_law_poster_request = models.ForeignKey(LaborLawPosterRequest, on_delete=models.CASCADE, related_name='compliance_requests', null=True, blank=True)
-    
     def save(self, *args, **kwargs):
         # Set the price based on request type when saving
         if not self.price:
-            self.price = self.SERVICE_PRICES.get(self.request_type, 0)
+            self.price = self.SERVICE_PRICES.get(self.request_type, Decimal('0'))
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f"{self.business.name} - Compliance Request"
+        return f"{self.business.name} - {self.get_request_type_display()} Request"
+
+    def get_total_price(self):
+        """Calculate total price of all associated service requests"""
+        total = self.price or Decimal('0')
+        if hasattr(self, 'federal_ein_request'):
+            total += self.SERVICE_PRICES['FEDERAL_EIN']
+        if hasattr(self, 'operating_agreement_request'):
+            total += self.SERVICE_PRICES['OPERATING_AGREEMENT']
+        if hasattr(self, 'corporate_bylaws_request'):
+            total += self.SERVICE_PRICES['CORPORATE_BYLAWS']  # Using same price as operating agreement
+        if hasattr(self, 'certificate_existence_request'):
+            total += self.SERVICE_PRICES['CERTIFICATE_EXISTENCE']
+        if hasattr(self, 'labor_law_poster_request'):
+            total += self.SERVICE_PRICES['LABOR_LAW_POSTER']
+        return total
