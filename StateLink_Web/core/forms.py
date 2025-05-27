@@ -1,5 +1,5 @@
 from django import forms
-from .models import Business, ComplianceRequest
+from .models import Business, ComplianceRequest, CorporateBylawsRequest
 
 class BusinessSearchForm(forms.Form):
     search_query = forms.CharField(
@@ -810,3 +810,64 @@ class PaymentForm(forms.Form):
         fields = [
             'agrees_to_terms_digital_signature', 'client_signature_text'
         ]
+
+class CorporateBylawsForm(forms.ModelForm):
+    corporate_officers = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Enter each officer\'s name and title on a new line (e.g., "John Smith, President")'
+        }),
+        help_text='Enter each officer\'s name and title on a new line'
+    )
+    
+    board_of_directors = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Enter each director\'s name and position on a new line'
+        }),
+        help_text='Enter each director\'s name and position on a new line'
+    )
+    
+    authorized_shares = forms.IntegerField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter total number of authorized shares'
+        }),
+        min_value=1,
+        help_text='Total number of authorized shares'
+    )
+    
+    par_value_per_share = forms.DecimalField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter par value per share (e.g., 0.01)'
+        }),
+        max_digits=10,
+        decimal_places=4,
+        min_value=0,
+        help_text='Par value per share (e.g., 0.01 for $0.01)'
+    )
+
+    class Meta:
+        model = CorporateBylawsRequest
+        fields = [
+            'corporate_officers',
+            'board_of_directors',
+            'authorized_shares',
+            'par_value_per_share'
+        ]
+
+    def clean_corporate_officers(self):
+        officers = self.cleaned_data.get('corporate_officers')
+        if not officers:
+            raise forms.ValidationError('Please enter at least one corporate officer.')
+        return officers
+
+    def clean_board_of_directors(self):
+        directors = self.cleaned_data.get('board_of_directors')
+        if not directors:
+            raise forms.ValidationError('Please enter at least one board member.')
+        return directors
+

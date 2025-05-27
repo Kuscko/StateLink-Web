@@ -175,7 +175,37 @@ class CorporateBylawsRequest(models.Model):
     price = 249.95
 
     # Fields for CorporateBylawsForm
-    member_names = models.TextField(blank=True, null=True)
+    corporate_officers = models.TextField(
+        verbose_name="Corporate Officers",
+        help_text="List of corporate officers with their titles",
+        blank=True,
+        null=True
+    )
+    board_of_directors = models.TextField(
+        verbose_name="Board of Directors",
+        help_text="List of board members with their positions",
+        blank=True,
+        null=True
+    )
+    authorized_shares = models.IntegerField(
+        verbose_name="Authorized Shares",
+        help_text="Total number of authorized shares",
+        blank=True,
+        null=True
+    )
+    par_value_per_share = models.DecimalField(
+        max_digits=10,
+        decimal_places=4,
+        verbose_name="Par Value Per Share",
+        help_text="Par value per share",
+        blank=True,
+        null=True
+    )
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+
+    def __str__(self):
+        return f"Corporate Bylaws Request - {self.created_at.strftime('%Y-%m-%d')}"
 
 class CertificateExistenceRequest(models.Model):
     price = 79.95

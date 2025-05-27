@@ -6,8 +6,7 @@ from .models import Business, ComplianceRequest
 from .forms import (
     BusinessSearchForm,
     ComplianceRequestForm,
-    BusinessRegistrationForm,
-    AnnualReportForm,
+    CorporateBylawsForm,
     OperatingAgreementForm,
     FederalEINForm,
     LaborLawPosterForm,
@@ -205,28 +204,6 @@ class ComplianceRequestView(FormView):
         if compliance_requests:
             return redirect('core:service_form', request_id=compliance_requests[0].id)
         return redirect('core:home')
-
-class AnnualReportView(FormView):
-    template_name = 'core/annual_report.html'
-    form_class = AnnualReportForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        business_id = self.kwargs.get('business_id')
-        business = get_object_or_404(Business, id=business_id)
-        context['business'] = business
-        return context
-
-    def form_valid(self, form):
-        business_id = self.kwargs.get('business_id')
-        business = get_object_or_404(Business, id=business_id)
-        
-        compliance_request = form.save(commit=False)
-        compliance_request.business = business
-        compliance_request.request_type = 'ANNUAL_REPORT'
-        compliance_request.save()
-        
-        return redirect('core:payment', request_id=compliance_request.id)
 
 class PaymentForm(forms.Form):
     agrees_to_terms_digital_signature = forms.BooleanField(required=True)
@@ -457,7 +434,7 @@ class ServiceFormView(FormView):
         # Map request types to form classes
         form_map = {
             'OPERATING_AGREEMENT': OperatingAgreementForm,
-            'CORPORATE_BYLAWS': OperatingAgreementForm,  # Using OperatingAgreementForm for now, should be replaced with CorporateBylawsForm
+            'CORPORATE_BYLAWS': CorporateBylawsForm,
             'FEDERAL_EIN': FederalEINForm,
             'LABOR_LAW_POSTER': LaborLawPosterForm,
             'CERTIFICATE_EXISTENCE': CertificateExistenceForm,

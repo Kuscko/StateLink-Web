@@ -1,73 +1,64 @@
 {% extends 'core/service_form_base.html' %}
 
 {% block service_form_fields %}
+<div class="container-fluid">
+    <h4 class="mb-3">Corporate Bylaws</h4>
 
+    <!-- Corporate Information Section -->
+    <div class="mb-4 p-3 border rounded">
+        <h5>Corporate Structure</h5>
+        
+        <div class="mb-3">
+            <label for="{{ form.corporate_officers.id_for_label }}" class="form-label">Corporate Officers</label>
+            {{ form.corporate_officers }}
+            {% if form.corporate_officers.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.corporate_officers.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+            <small class="form-text text-muted d-block mt-1">Enter each officer's name and title on a new line (e.g., "John Smith, President")</small>
+        </div>
 
-<div class="form-group mb-3">
-    <label for="{{ form.officers.id_for_label }}">Corporate Officers</label>
-    {{ form.officers }}
-    {% if form.officers.errors %}
-    <div class="invalid-feedback d-block">
-        {% for error in form.officers.errors %}
-            {{ error }}
-        {% endfor %}
+        <div class="mb-3">
+            <label for="{{ form.board_of_directors.id_for_label }}" class="form-label">Board of Directors</label>
+            {{ form.board_of_directors }}
+            {% if form.board_of_directors.errors %}
+                <div class="invalid-feedback d-block">
+                    {% for error in form.board_of_directors.errors %}{{ error }}{% endfor %}
+                </div>
+            {% endif %}
+            <small class="form-text text-muted d-block mt-1">Enter each director's name and position on a new line</small>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.authorized_shares.id_for_label }}" class="form-label">Authorized Shares</label>
+                {{ form.authorized_shares }}
+                {% if form.authorized_shares.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.authorized_shares.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+                <small class="form-text text-muted d-block mt-1">Enter the total number of authorized shares</small>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="{{ form.par_value_per_share.id_for_label }}" class="form-label">Par Value Per Share</label>
+                {{ form.par_value_per_share }}
+                {% if form.par_value_per_share.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.par_value_per_share.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+                <small class="form-text text-muted d-block mt-1">Enter the par value per share (e.g., "0.01" for $0.01)</small>
+            </div>
+        </div>
     </div>
-    {% endif %}
-    <small class="form-text text-muted">Enter each officer's name and title on a new line (e.g., "John Smith, President")</small>
-</div>
 
-<div class="form-group mb-3">
-    <label for="{{ form.directors.id_for_label }}">Board of Directors</label>
-    {{ form.directors }}
-    {% if form.directors.errors %}
-    <div class="invalid-feedback d-block">
-        {% for error in form.directors.errors %}
-            {{ error }}
-        {% endfor %}
+    <div class="alert alert-warning">
+        <h5 class="alert-heading">Important Legal Notice</h5>
+        <p class="mb-0">
+            These Corporate Bylaws are a template provided for informational purposes only and is not a substitute for legal advice. You are advised to consult with an attorney to ensure the accuracy and suitability of this agreement for your specific situation and to comply with all applicable laws. Business Compliance Org NC shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or in any way connected with the use of this agreement.
+        </p>
     </div>
-    {% endif %}
-    <small class="form-text text-muted">Enter each director's name and position on a new line</small>
-</div>
-
-<div class="form-group mb-3">
-    <label for="{{ form.authorized_shares.id_for_label }}">Authorized Shares</label>
-    {{ form.authorized_shares }}
-    {% if form.authorized_shares.errors %}
-    <div class="invalid-feedback d-block">
-        {% for error in form.authorized_shares.errors %}
-            {{ error }}
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-
-<div class="form-group mb-3">
-    <label for="{{ form.issued_shares.id_for_label }}">Issued Shares</label>
-    {{ form.issued_shares }}
-    {% if form.issued_shares.errors %}
-    <div class="invalid-feedback d-block">
-        {% for error in form.issued_shares.errors %}
-            {{ error }}
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-
-<div class="form-group mb-3">
-    <label for="{{ form.par_value.id_for_label }}">Par Value Per Share</label>
-    {{ form.par_value }}
-    {% if form.par_value.errors %}
-    <div class="invalid-feedback d-block">
-        {% for error in form.par_value.errors %}
-            {{ error }}
-        {% endfor %}
-    </div>
-    {% endif %}
-</div>
-
-<div class="alert alert-warning mb-4">
-    <p class="mb-0">
-        <strong>Important Legal Notice:</strong> These Corporate Bylaws are a template provided for informational purposes only and is not a substitute for legal advice. You are advised to consult with an attorney to ensure the accuracy and suitability of this agreement for your specific situation and to comply with all applicable laws. Business Compliance Org NC shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or in any way connected with the use of this agreement.
-    </p>
 </div>
 {% endblock %} 
