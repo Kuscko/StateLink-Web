@@ -23,12 +23,6 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy project files
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
-
-# Run migrations; no longer running migrations in the Dockerfile
-# RUN python manage.py migrate
-
 # Expose the port the app runs on
 EXPOSE 8000
 
