@@ -1,17 +1,9 @@
 from django.db import models
 from django.utils import timezone
 from decimal import Decimal
-from statelink_core.registry_etl.models import Business as CoreBusiness
 
 # Create your models here.
-class Business(CoreBusiness):
-    """
-    Extended Business model that inherits from the core Business model.
-    This allows us to add web-specific fields while maintaining the core functionality.
-    """
-    # Add any web-specific fields here
-    pass
-
+class Business(models.Model):
     BUSINESS_TYPES = [
         ('CORP', 'Corporation'),
         ('LLC', 'Limited Liability Company'),
