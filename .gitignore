@@ -5,6 +5,7 @@
 
 # Created by Application
 *.sqlite3
+.env
 
 # User-specific files
 *.rsuser
