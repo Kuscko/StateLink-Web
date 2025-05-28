@@ -84,7 +84,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(help_text='The legal name of the business entity.', max_length=255, verbose_name='Business Name')),
-                ('reference_number', models.CharField(help_text='Unique reference number for the business.', max_length=50, unique=True, verbose_name='Reference Number')),
+                ('reference_id', models.CharField(help_text='Unique reference number for the business.', max_length=50, unique=True, verbose_name='Reference Number')),
                 ('business_type', models.CharField(choices=[('CORP', 'Corporation'), ('LLC', 'Limited Liability Company')], help_text='Type of business entity.', max_length=10, verbose_name='Business Type')),
                 ('address', models.TextField(help_text='Main business address line 1.', verbose_name='Primary Address')),
                 ('address2', models.TextField(blank=True, help_text='Optional second line of the address.', null=True, verbose_name='Secondary Address')),
@@ -103,7 +103,7 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': 'Business',
                 'verbose_name_plural': 'Businesses',
-                'indexes': [models.Index(fields=['state_code'], name='core_busine_state_c_1d7db8_idx'), models.Index(fields=['status'], name='core_busine_status_ebf13f_idx'), models.Index(fields=['is_new'], name='core_busine_is_new_e9138b_idx'), models.Index(fields=['missing_filing'], name='core_busine_missing_b6520c_idx'), models.Index(fields=['name'], name='core_busine_name_b3e876_idx'), models.Index(fields=['reference_number'], name='core_busine_referen_85d542_idx'), models.Index(fields=['business_type'], name='core_busine_busines_0a39f6_idx')],
+                'indexes': [models.Index(fields=['state_code'], name='core_busine_state_c_1d7db8_idx'), models.Index(fields=['status'], name='core_busine_status_ebf13f_idx'), models.Index(fields=['is_new'], name='core_busine_is_new_e9138b_idx'), models.Index(fields=['missing_filing'], name='core_busine_missing_b6520c_idx'), models.Index(fields=['name'], name='core_busine_name_b3e876_idx'), models.Index(fields=['reference_id'], name='core_busine_referen_85d542_idx'), models.Index(fields=['business_type'], name='core_busine_busines_0a39f6_idx')],
             },
         ),
         migrations.CreateModel(
@@ -115,7 +115,7 @@ class Migration(migrations.Migration):
                 ('price', models.DecimalField(blank=True, decimal_places=2, max_digits=10, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('applicant_reference_number', models.CharField(blank=True, max_length=100, null=True, verbose_name='Applicant Reference Number (from letter)')),
+                ('applicant_reference_id', models.CharField(blank=True, max_length=100, null=True, verbose_name='Applicant Reference Number (from letter)')),
                 ('applicant_first_name', models.CharField(blank=True, max_length=100, null=True, verbose_name='Applicant First Name')),
                 ('applicant_last_name', models.CharField(blank=True, max_length=100, null=True, verbose_name='Applicant Last Name')),
                 ('applicant_email', models.EmailField(blank=True, max_length=254, null=True, verbose_name='Applicant Email')),

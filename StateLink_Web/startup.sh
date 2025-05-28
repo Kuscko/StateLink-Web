@@ -7,4 +7,4 @@ python manage.py collectstatic --noinput
 python manage.py migrate
 
 # Start Gunicorn
-gunicorn StateLink_Web.wsgi:application --bind=0.0.0.0:8000 
+gunicorn StateLink_Web.wsgi:application --bind=0.0.0.0:8000 --workers=4

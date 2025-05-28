@@ -9,12 +9,15 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
-from pathlib import Path
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# Load environment variables
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Import environment variables based on deployment
 
@@ -22,24 +25,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '8b!=39oi1q^0yzwtsc(i1f2=*pie!(1ss5-v_d043*3fk^c&$+'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = [
-    'statelink-webapp.azurewebsites.net',
-    'ncbizpay.org',
-    'www.ncbizpay.org',
-    'localhost',
-    '127.0.0.1',
+    os.getenv('ALLOWED_HOSTS'),
 ]
 
 # CSRF settings
 CSRF_TRUSTED_ORIGINS = [
-    'https://statelink-webapp.azurewebsites.net',
-    'https://ncbizpay.org',
-    'https://www.ncbizpay.org',
+    os.getenv('CSRF_TRUSTED_ORIGINS'),
 ]
 
 # Application definition
@@ -94,16 +91,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'StateLink_Web.wsgi.application'
 
-
-
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+        'OPTIONS': {
+            'sslmode': os.getenv('DB_SSL_MODE', 'require'),
+        },
     }
 }
 
@@ -169,3 +170,16 @@ RATELIMIT_BY_VIEW = True # Rate limit by view
 RATELIMIT_FAILURE = "429" # HTTP status code for rate limit failure
 RATELIMIT_SUCCESS = "200 OK" # HTTP status code for rate limit success
 RATELIMIT_RESET_ON_SUCCESS = True # Reset rate limit on success
+
+# Heartland Payment Configuration
+HEARTLAND_PUBLIC_KEY = os.getenv('HEARTLAND_PUBLIC_KEY')
+HEARTLAND_SECRET_KEY = os.getenv('HEARTLAND_SECRET_KEY')
+HEARTLAND_DEVELOPER_ID = os.getenv('HEARTLAND_DEVELOPER_ID')
+HEARTLAND_VERSION_NUMBER = os.getenv('HEARTLAND_VERSION_NUMBER')
+HEARTLAND_SERVICE_URL = os.getenv('HEARTLAND_SERVICE_URL')
+
+# HEARTLAND_PUBLIC_KEY = "pkapi_cert_jKc1FtuyAydZhZfbB3"  # Replace with your public key
+# HEARTLAND_SECRET_KEY = "skapi_cert_MTyMAQBiHVEAewvIzXVFcmUd2UcyBge_eCpaASUp0A"  # Replace with your secret key
+# HEARTLAND_DEVELOPER_ID = "000000"  # Replace with your developer ID
+# HEARTLAND_VERSION_NUMBER = "0000"  # Replace with your version number
+# HEARTLAND_SERVICE_URL = "https://cert.api2.heartlandportico.com"  # Use production URL in production
