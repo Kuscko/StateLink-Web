@@ -109,7 +109,7 @@ class ComplianceRequestView(FormView):
         
         # Calculate discount if all services are selected
         discount = Decimal('49.90')
-        total = Decimal('0')
+        total = subtotal
         if business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(service in selected_services for service in all_services):

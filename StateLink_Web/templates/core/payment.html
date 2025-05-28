@@ -216,21 +216,23 @@
 <!-- GlobalPayments SDK -->
 <script src="https://js.globalpay.com/v1/globalpayments.js"></script>
 <script type="text/javascript">
-    // Form validation
-    (function () {
-        'use strict'
-        var forms = document.querySelectorAll('.needs-validation')
+    // Form validation function
+    function validateForms() {
+        'use strict';
+        var forms = document.querySelectorAll('.needs-validation');
         Array.prototype.slice.call(forms).forEach(function (form) {
             form.addEventListener('submit', function (event) {
                 if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
-                form.classList.add('was-validated')
-            }, false)
-        })
-    })()
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }
 
+    // Call form validation
+    validateForms();
     // Configure Heartland payment form styles
     const styles = {
         'input': {
