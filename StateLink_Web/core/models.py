@@ -8,6 +8,13 @@ def generate_reference_id():
 
 # Create your models here.
 class Business(models.Model):
+    """
+    Extended Business model that inherits from the core Business model.
+    This allows us to add web-specific fields while maintaining the core functionality.
+    """
+    # Add any web-specific fields here
+    pass
+
     BUSINESS_TYPES = [
         ('CORP', 'Corporation'),
         ('LLC', 'Limited Liability Company'),

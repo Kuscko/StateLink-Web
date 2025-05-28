@@ -33,31 +33,6 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y build-essential libpq-dev
 
-      - name: Create .env file
-        run: |
-          cat << EOF > .env
-          # Django Core Settings
-          SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}
-          DEBUG=False
-          ALLOWED_HOSTS=ncbizpay.org,www.ncbizpay.org,ncnewllc.org,www.ncnewllc.org,ncnewcorp.org,www.ncnewcorp.org
-          CSRF_TRUSTED_ORIGINS=https://ncbizpay.org,https://www.ncbizpay.org
-
-          # Database Configuration
-          DB_NAME=statelink_db
-          DB_USER=${{ secrets.DB_USER }}
-          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-          DB_HOST=${{ secrets.DB_HOST }}
-          DB_PORT=5432
-          DB_SSL_MODE=require
-
-          # Heartland Payment Configuration
-          HEARTLAND_PUBLIC_KEY=${{ secrets.HEARTLAND_PUBLIC_KEY }}
-          HEARTLAND_SECRET_KEY=${{ secrets.HEARTLAND_SECRET_KEY }}
-          HEARTLAND_DEVELOPER_ID=${{ secrets.HEARTLAND_DEVELOPER_ID }}
-          HEARTLAND_VERSION_NUMBER=${{ secrets.HEARTLAND_VERSION_NUMBER }}
-          HEARTLAND_SERVICE_URL=${{ secrets.HEARTLAND_SERVICE_URL }}
-          EOF
-
       - name: Install Python dependencies
         run: | 
           python -m pip install --upgrade pip
