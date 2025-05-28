@@ -43,11 +43,12 @@ jobs:
           CSRF_TRUSTED_ORIGINS=https://ncbizpay.org,https://www.ncbizpay.org
 
           # Database Configuration
-          DB_NAME=${{ secrets.DB_NAME }}
+          DB_NAME=statelink_db
           DB_USER=${{ secrets.DB_USER }}
           DB_PASSWORD=${{ secrets.DB_PASSWORD }}
           DB_HOST=${{ secrets.DB_HOST }}
-          DB_PORT=${{ secrets.DB_PORT }}
+          DB_PORT=5432
+          DB_SSL_MODE=require
 
           # Heartland Payment Configuration
           HEARTLAND_PUBLIC_KEY=${{ secrets.HEARTLAND_PUBLIC_KEY }}
