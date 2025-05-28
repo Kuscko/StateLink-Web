@@ -26,11 +26,13 @@ COPY . .
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
-# Run migrations
-RUN python manage.py migrate
+# Run migrations; no longer running migrations in the Dockerfile
+# RUN python manage.py migrate
 
 # Expose the port the app runs on
 EXPOSE 8000
 
 # Run the Django application
-CMD ["gunicorn", "StateLink_Web.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "4"]
+COPY startup.sh /startup.sh
+RUN chmod +x /startup.sh
+CMD ["/startup.sh"]
