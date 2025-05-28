@@ -11,13 +11,13 @@ from .models import (
 
 @admin.register(Business)
 class BusinessAdmin(admin.ModelAdmin):
-    list_display = ('name', 'reference_number', 'business_type', 'state_code', 'status', 'date_formed')
+    list_display = ('name', 'reference_id', 'business_type', 'state_code', 'status', 'date_formed')
     list_filter = ('business_type', 'state_code', 'status', 'is_new', 'missing_filing')
-    search_fields = ('name', 'reference_number')
+    search_fields = ('name', 'reference_id')
     readonly_fields = ('created_at', 'updated_at')
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'reference_number', 'business_type', 'state_code')
+            'fields': ('name', 'reference_id', 'business_type', 'state_code')
         }),
         ('Address Information', {
             'fields': ('address', 'address2', 'city', 'zip_code')
@@ -106,7 +106,7 @@ class CertificateExistenceRequestInline(admin.StackedInline):
         }),
         ('Business Information', {
             'fields': (
-                'business_reference_number', 'business_name', 'file_number'
+                'business_reference_id', 'business_name', 'file_number'
             )
         }),
         ('Request Details', {
@@ -128,7 +128,7 @@ class LaborLawPosterRequestInline(admin.StackedInline):
         }),
         ('Business Information', {
             'fields': (
-                'business_reference_number', 'business_name'
+                'business_reference_id', 'business_name'
             )
         }),
     )
@@ -137,7 +137,7 @@ class LaborLawPosterRequestInline(admin.StackedInline):
 class ComplianceRequestAdmin(admin.ModelAdmin):
     list_display = ('business', 'request_type', 'status', 'price', 'created_at', 'get_total_price')
     list_filter = ('request_type', 'status')
-    search_fields = ('business__name', 'business__reference_number', 'applicant_first_name', 'applicant_last_name')
+    search_fields = ('business__name', 'business__reference_id', 'applicant_first_name', 'applicant_last_name')
     readonly_fields = ('created_at', 'updated_at', 'get_total_price')
     inlines = [
         FederalEINRequestInline,
@@ -152,7 +152,7 @@ class ComplianceRequestAdmin(admin.ModelAdmin):
         }),
         ('Applicant Information', {
             'fields': (
-                'applicant_reference_number', 'applicant_first_name',
+                'applicant_reference_id', 'applicant_first_name',
                 'applicant_last_name', 'applicant_email',
                 'applicant_phone_number'
             )
@@ -194,11 +194,11 @@ class CorporateBylawsRequestAdmin(admin.ModelAdmin):
 class CertificateExistenceRequestAdmin(admin.ModelAdmin):
     list_display = ('compliance_request', 'business_name', 'requestor_first_name', 'requestor_last_name')
     list_filter = ('purpose_of_request',)
-    search_fields = ('business_name', 'requestor_first_name', 'requestor_last_name', 'business_reference_number')
+    search_fields = ('business_name', 'requestor_first_name', 'requestor_last_name', 'business_reference_id')
     fieldsets = CertificateExistenceRequestInline.fieldsets
 
 @admin.register(LaborLawPosterRequest)
 class LaborLawPosterRequestAdmin(admin.ModelAdmin):
     list_display = ('compliance_request', 'business_name', 'requestor_first_name', 'requestor_last_name')
-    search_fields = ('business_name', 'requestor_first_name', 'requestor_last_name', 'business_reference_number')
+    search_fields = ('business_name', 'requestor_first_name', 'requestor_last_name', 'business_reference_id')
     fieldsets = LaborLawPosterRequestInline.fieldsets

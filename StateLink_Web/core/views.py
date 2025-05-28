@@ -47,7 +47,7 @@ class SearchResultsView(TemplateView):
         
         # Search in both reference number and business name
         businesses = Business.objects.filter(
-            models.Q(reference_number__icontains=search_query) |
+            models.Q(reference_id__icontains=search_query) |
             models.Q(name__icontains=search_query)
         )
         
@@ -529,12 +529,12 @@ def business_search_autocomplete(request):
         return JsonResponse({'results': []})
     
     businesses = Business.objects.filter(
-        Q(name__icontains=query) | Q(reference_number__icontains=query)
-    ).values('id', 'name', 'reference_number', 'state_code')[:10]
+        Q(name__icontains=query) | Q(reference_id__icontains=query)
+    ).values('id', 'name', 'reference_id', 'state_code')[:10]
     
     results = [{
         'id': business['id'],
-        'text': f"{business['name']} ({business['reference_number']}) - {business['state_code']}"
+        'text': f"{business['name']} ({business['reference_id']}) - {business['state_code']}"
     } for business in businesses]
     
     return JsonResponse({'results': results})

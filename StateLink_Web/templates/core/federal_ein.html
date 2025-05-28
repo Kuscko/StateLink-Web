@@ -12,14 +12,14 @@
         <p class="text-muted small">This information is for our records and communication regarding this EIN application.</p>
         
         <div class="mb-3">
-            <label for="{{ form.applicant_reference_number.id_for_label }}" class="form-label">{{ form.applicant_reference_number.label }}</label>
-            {{ form.applicant_reference_number }}
-            {% if form.applicant_reference_number.help_text %}
-                <small class="form-text text-muted d-block mt-1">{{ form.applicant_reference_number.help_text }}</small>
+            <label for="{{ form.applicant_reference_id.id_for_label }}" class="form-label">{{ form.applicant_reference_id.label }}</label>
+            {{ form.applicant_reference_id }}
+            {% if form.applicant_reference_id.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.applicant_reference_id.help_text }}</small>
             {% endif %}
-            {% if form.applicant_reference_number.errors %}
+            {% if form.applicant_reference_id.errors %}
                 <div class="invalid-feedback d-block">
-                    {% for error in form.applicant_reference_number.errors %}{{ error }}{% endfor %}
+                    {% for error in form.applicant_reference_id.errors %}{{ error }}{% endfor %}
                 </div>
             {% endif %}
         </div>
