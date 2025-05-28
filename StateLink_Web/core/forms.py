@@ -415,7 +415,7 @@ class FederalEINForm(forms.ModelForm):
     YES_NO_CHOICES = [(True, 'Yes'), (False, 'No')]
 
     # Applicant Information (New top section)
-    applicant_reference_number = forms.CharField(
+    applicant_reference_id = forms.CharField(
         max_length=100, required=False, 
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Reference Number'}),
         label="Reference Number",
@@ -535,7 +535,7 @@ class FederalEINForm(forms.ModelForm):
         model = ComplianceRequest
         fields = [
             # Applicant Info
-            'applicant_reference_number', 'applicant_first_name', 'applicant_last_name', 'applicant_email', 'applicant_phone_number',
+            'applicant_reference_id', 'applicant_first_name', 'applicant_last_name', 'applicant_email', 'applicant_phone_number',
             # EIN Form Sections
             'ein_legal_structure', 
             'sole_proprietor_members_count', 'partnership_type', 'corporation_type',
@@ -563,7 +563,7 @@ class FederalEINForm(forms.ModelForm):
                  field.required = False
             
             # Specific labels from the user's text (ensure these match the new workflow if different)
-            if field_name == 'applicant_reference_number': 
+            if field_name == 'applicant_reference_id': 
                 field.label = "Reference Number"
                 field.help_text = "(This number can be found on the top right hand corner of your letter)"
             if field_name == 'applicant_first_name':
@@ -613,7 +613,7 @@ class FederalEINForm(forms.ModelForm):
 
             # Add placeholders if not already set via widget attrs
             placeholders = {
-                'applicant_reference_number': 'Reference Number',
+                'applicant_reference_id': 'Reference Number',
                 'applicant_first_name': 'First Name',
                 'applicant_last_name': 'Last Name',
                 'applicant_email': 'Email',
@@ -671,7 +671,7 @@ class LaborLawPosterForm(forms.ModelForm):
         }),
         label="Phone Number"
     )
-    reference_number = forms.CharField(
+    reference_id = forms.CharField(
         max_length=100,
         required=True,
         widget=forms.TextInput(attrs={
@@ -695,7 +695,7 @@ class LaborLawPosterForm(forms.ModelForm):
         model = ComplianceRequest
         fields = [
             'first_name', 'last_name', 'email', 'phone_number',
-            'reference_number', 'business_name',
+            'reference_id', 'business_name',
             'agrees_to_terms_digital_signature', 'client_signature_text'
         ]
 

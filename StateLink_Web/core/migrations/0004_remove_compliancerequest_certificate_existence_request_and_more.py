@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='certificateexistencerequest',
-            name='business_reference_number',
+            name='business_reference_id',
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
         migrations.AddField(
@@ -112,7 +112,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='corporatebylawsrequest',
-            name='business_reference_number',
+            name='business_reference_id',
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
         migrations.AddField(
@@ -172,7 +172,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='laborlawposterrequest',
-            name='business_reference_number',
+            name='business_reference_id',
             field=models.CharField(blank=True, max_length=100, null=True),
         ),
         migrations.AddField(

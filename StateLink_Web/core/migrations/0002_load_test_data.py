@@ -11,7 +11,7 @@ def load_test_data(apps, schema_editor):
         {
             'name': 'Acme Technologies LLC',
             'business_type': 'LLC',
-            'reference_number': 'REF001',
+            'reference_id': 'REF001',
             'address': '123 Main Street',
             'address2': 'Suite 100',
             'city': 'Raleigh',
@@ -27,7 +27,7 @@ def load_test_data(apps, schema_editor):
         {
             'name': 'Global Solutions Corp',
             'business_type': 'CORP',
-            'reference_number': 'REF002',
+            'reference_id': 'REF002',
             'address': '456 Business Park',
             'address2': None,
             'city': 'Charlotte',
@@ -43,7 +43,7 @@ def load_test_data(apps, schema_editor):
         {
             'name': 'Innovative Services LLC',
             'business_type': 'LLC',
-            'reference_number': 'REF003',
+            'reference_id': 'REF003',
             'address': '789 Tech Boulevard',
             'address2': 'Unit 200',
             'city': 'Durham',
@@ -59,7 +59,7 @@ def load_test_data(apps, schema_editor):
         {
             'name': 'Premier Consulting Corp',
             'business_type': 'CORP',
-            'reference_number': 'REF004',
+            'reference_id': 'REF004',
             'address': '321 Corporate Center',
             'address2': 'Floor 15',
             'city': 'Greensboro',
@@ -75,7 +75,7 @@ def load_test_data(apps, schema_editor):
         {
             'name': 'Elite Business Solutions LLC',
             'business_type': 'LLC',
-            'reference_number': 'REF005',
+            'reference_id': 'REF005',
             'address': '555 Enterprise Way',
             'address2': None,
             'city': 'Winston-Salem',
@@ -95,7 +95,7 @@ def load_test_data(apps, schema_editor):
 
 def remove_test_data(apps, schema_editor):
     Business = apps.get_model('core', 'Business')
-    Business.objects.filter(reference_number__in=['REF001', 'REF002', 'REF003', 'REF004', 'REF005']).delete()
+    Business.objects.filter(reference_id__in=['REF001', 'REF002', 'REF003', 'REF004', 'REF005']).delete()
 
 class Migration(migrations.Migration):
     dependencies = [

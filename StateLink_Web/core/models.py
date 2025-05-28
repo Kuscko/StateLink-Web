@@ -1,6 +1,10 @@
 from django.db import models
-from django.utils import timezone
 from decimal import Decimal
+import uuid
+
+def generate_reference_id():
+    """Generate a unique 8-character reference ID"""
+    return str(uuid.uuid4())[:8]
 
 # Create your models here.
 class Business(models.Model):
@@ -19,11 +23,12 @@ class Business(models.Model):
         verbose_name="Business Name",
         help_text="The legal name of the business entity."
     )
-    reference_number = models.CharField(
-        max_length=50,
-        unique=True,
-        verbose_name="Reference Number",
-        help_text="Unique reference number for the business."
+    reference_id = models.CharField(
+        primary_key=True,
+        max_length=255,
+        verbose_name="Reference ID",
+        help_text="The unique identifier for the business entity.",
+        default=generate_reference_id
     )
     business_type = models.CharField(
         max_length=10,
@@ -103,7 +108,7 @@ class Business(models.Model):
             models.Index(fields=["is_new"]),
             models.Index(fields=["missing_filing"]),
             models.Index(fields=["name"]),
-            models.Index(fields=["reference_number"]),
+            models.Index(fields=["reference_id"]),
             models.Index(fields=["business_type"]),
         ]
         verbose_name = "Business"
@@ -248,7 +253,7 @@ class CorporateBylawsRequest(models.Model):
     requestor_last_name = models.CharField(max_length=100, blank=True, null=True)
     requestor_email = models.EmailField(max_length=254, blank=True, null=True)
     requestor_phone_number = models.CharField(max_length=20, blank=True, null=True)
-    business_reference_number = models.CharField(max_length=100, blank=True, null=True)
+    business_reference_id = models.CharField(max_length=100, blank=True, null=True)
     business_name = models.CharField(max_length=255, blank=True, null=True)
     purpose_of_request = models.CharField(choices=PURPOSE_OF_REQUEST_CHOICES, max_length=255, blank=True, null=True)
     other_reason_text = models.CharField(max_length=255, blank=True, null=True)
@@ -272,7 +277,7 @@ class CertificateExistenceRequest(models.Model):
     requestor_last_name = models.CharField(max_length=100, blank=True, null=True)
     requestor_email = models.EmailField(max_length=254, blank=True, null=True)
     requestor_phone_number = models.CharField(max_length=20, blank=True, null=True)
-    business_reference_number = models.CharField(max_length=100, blank=True, null=True)
+    business_reference_id = models.CharField(max_length=100, blank=True, null=True)
     business_name = models.CharField(max_length=255, blank=True, null=True)
     file_number = models.CharField(max_length=100, blank=True, null=True)
     purpose_of_request = models.CharField(choices=PURPOSE_OF_REQUEST_CHOICES, max_length=255, blank=True, null=True)
@@ -288,7 +293,7 @@ class LaborLawPosterRequest(models.Model):
     requestor_last_name = models.CharField(max_length=100, blank=True, null=True)
     requestor_email = models.EmailField(max_length=254, blank=True, null=True)
     requestor_phone_number = models.CharField(max_length=20, blank=True, null=True)
-    business_reference_number = models.CharField(max_length=100, blank=True, null=True)
+    business_reference_id = models.CharField(max_length=100, blank=True, null=True)
     business_name = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
@@ -330,7 +335,7 @@ class ComplianceRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     # Applicant's contact information for THIS request
-    applicant_reference_number = models.CharField(max_length=100, blank=True, null=True, verbose_name="Applicant Reference Number (from letter)")
+    applicant_reference_id = models.CharField(max_length=100, blank=True, null=True, verbose_name="Applicant Reference Number (from letter)")
     applicant_first_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Applicant First Name")
     applicant_last_name = models.CharField(max_length=100, blank=True, null=True, verbose_name="Applicant Last Name")
     applicant_email = models.EmailField(max_length=254, blank=True, null=True, verbose_name="Applicant Email")
