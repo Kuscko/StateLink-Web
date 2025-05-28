@@ -6,8 +6,7 @@ from .models import Business, ComplianceRequest
 from .forms import (
     BusinessSearchForm,
     ComplianceRequestForm,
-    BusinessRegistrationForm,
-    AnnualReportForm,
+    CorporateBylawsForm,
     OperatingAgreementForm,
     FederalEINForm,
     LaborLawPosterForm,
@@ -18,6 +17,13 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django import forms
 import time
+from django.conf import settings
+import logging
+from globalpayments.api.builders import Address
+from globalpayments.api.payment_methods import CreditCardData
+from globalpayments.api import PorticoConfig, ServicesContainer
+
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
@@ -102,13 +108,12 @@ class ComplianceRequestView(FormView):
         subtotal = sum(prices.get(service, Decimal('0')) for service in selected_services)
         
         # Calculate discount if all services are selected
-        discount = Decimal('0')
+        discount = Decimal('49.90')
+        total = subtotal
         if business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(service in selected_services for service in all_services):
-                discount = subtotal * Decimal('0.1')  # 10% discount
-        
-        total = subtotal - discount
+                total = subtotal - discount
         
         context.update({
             'subtotal': subtotal,
@@ -145,13 +150,12 @@ class ComplianceRequestView(FormView):
         subtotal = sum(prices.get(service, Decimal('0')) for service in services)
         
         # Calculate discount if all services are selected
-        discount = Decimal('0')
+        discount = Decimal('49.90')
+        total = Decimal('0')
         if business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(service in services for service in all_services):
-                discount = subtotal * Decimal('0.1')  # 10% discount
-        
-        total = subtotal - discount
+                total = subtotal - discount
         
         for service in services:
             if service == 'LABOR_LAW_POSTER_CERT':
@@ -201,30 +205,9 @@ class ComplianceRequestView(FormView):
             return redirect('core:service_form', request_id=compliance_requests[0].id)
         return redirect('core:home')
 
-class AnnualReportView(FormView):
-    template_name = 'core/annual_report.html'
-    form_class = AnnualReportForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        business_id = self.kwargs.get('business_id')
-        business = get_object_or_404(Business, id=business_id)
-        context['business'] = business
-        return context
-
-    def form_valid(self, form):
-        business_id = self.kwargs.get('business_id')
-        business = get_object_or_404(Business, id=business_id)
-        
-        compliance_request = form.save(commit=False)
-        compliance_request.business = business
-        compliance_request.request_type = 'ANNUAL_REPORT'
-        compliance_request.save()
-        
-        return redirect('core:payment', request_id=compliance_request.id)
-
 class PaymentForm(forms.Form):
-    pass  # No fields needed for mock/demo
+    agrees_to_terms_digital_signature = forms.BooleanField(required=True)
+    client_signature_text = forms.CharField(max_length=255)
 
 class PaymentView(FormView):
     template_name = 'core/payment.html'
@@ -236,23 +219,22 @@ class PaymentView(FormView):
         compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
         context['compliance_request'] = compliance_request
         context['business'] = compliance_request.business
+        context['heartland_public_key'] = settings.HEARTLAND_PUBLIC_KEY
+        
+        # Get all pending requests
         request_ids = self.request.session.get('compliance_request_ids', [])
-        if not request_ids:
-            request_ids = [request_id]
         pending_requests = ComplianceRequest.objects.filter(id__in=request_ids)
-        # Deduplicate by request_type
-        unique_requests = {}
-        for req in pending_requests:
-            unique_requests[req.request_type] = req
-        pending_requests = list(unique_requests.values())
+        
         # Group bundled services
         bundled_services = []
         individual_services = []
         has_labor_law = any(r.request_type == 'LABOR_LAW_POSTER' for r in pending_requests)
         has_certificate = any(r.request_type == 'CERTIFICATE_EXISTENCE' for r in pending_requests)
+        
         for request in pending_requests:
             if request.request_type not in ['LABOR_LAW_POSTER', 'CERTIFICATE_EXISTENCE']:
                 individual_services.append(request)
+        
         if has_labor_law and has_certificate:
             bundled_services.append({
                 'name': 'Labor Law Poster & Certificate of Existence',
@@ -263,27 +245,29 @@ class PaymentView(FormView):
                 individual_services.append(next(r for r in pending_requests if r.request_type == 'LABOR_LAW_POSTER'))
             if has_certificate:
                 individual_services.append(next(r for r in pending_requests if r.request_type == 'CERTIFICATE_EXISTENCE'))
-        context['bundled_services'] = bundled_services
-        context['individual_services'] = individual_services
         
         # Calculate subtotal
         subtotal = sum(service['price'] for service in bundled_services)
         subtotal += sum(request.price or Decimal('0') for request in individual_services)
         
         # Calculate discount if all services are selected
-        discount = Decimal('0')
+        discount = Decimal('49.90')
+        total_price = subtotal
+        show_discount = False
+        
         if compliance_request.business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if compliance_request.business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(any(r.request_type == s or (s == 'LABOR_LAW_POSTER_CERT' and (r.request_type == 'LABOR_LAW_POSTER' or r.request_type == 'CERTIFICATE_EXISTENCE')) for r in pending_requests) for s in all_services):
-                discount = subtotal * Decimal('0.1')  # 10% discount
-        
-        total_price = subtotal - discount
+                total_price = subtotal - discount
+                show_discount = True
         
         context.update({
+            'bundled_services': bundled_services,
+            'individual_services': individual_services,
             'subtotal': subtotal,
             'discount': discount,
             'total_price': total_price,
-            'show_discount': discount > 0
+            'show_discount': show_discount
         })
         
         return context
@@ -292,23 +276,85 @@ class PaymentView(FormView):
         request_id = self.kwargs.get('request_id')
         compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
         
-        # Mock payment processing - in real implementation, process payment here
-        # Update compliance request status
-        compliance_request.status = 'COMPLETED'
-        compliance_request.save()
+        # Get payment token from form
+        payment_token = self.request.POST.get('payment_token')
+        if not payment_token:
+            logger.error("Payment token missing from form submission")
+            messages.error(self.request, 'Payment processing failed. Please try again.')
+            return self.form_invalid(form)
         
-        # Store necessary information in session for confirmation page
-        self.request.session['payment_info'] = {
-            'user_email': self.request.user.email if self.request.user.is_authenticated else 'guest@example.com',
-            'order_reference': f"ORD-{compliance_request.id}-{int(time.time())}",
-            'amount': str(self.get_context_data()['total_price']),
-            'discount': str(self.get_context_data()['discount']),
-            'service_type': compliance_request.get_request_type_display(),
-            'business_name': compliance_request.business.name
-        }
-        
-        # Redirect to confirmation page
-        return redirect('core:payment_confirmation', request_id=request_id)
+        try:
+            # Configure GlobalPayments service
+            config = PorticoConfig()
+            config.secret_api_key = settings.HEARTLAND_SECRET_KEY
+            config.developer_id = settings.HEARTLAND_DEVELOPER_ID
+            config.version_number = settings.HEARTLAND_VERSION_NUMBER
+            config.service_url = settings.HEARTLAND_SERVICE_URL
+
+            ServicesContainer.configure(config)
+            
+            # Get total price from context
+            total_price = self.get_context_data()['total_price']
+            
+            # Log payment attempt
+            logger.info(f"Processing payment for compliance request {request_id}")
+            logger.info(f"Amount: ${total_price}")
+            
+            # Create card data from token
+            card = CreditCardData()
+            card.token = payment_token
+            
+            # Create address object
+            address = Address()
+            address.postal_code = self.request.POST.get('billing_zip')
+            
+            # Process payment
+            response = card.charge(amount=str(total_price)) \
+                .with_currency("USD") \
+                .with_address(address) \
+                .execute()
+            
+            # Log payment response
+            print(f"Payment response: {response.response_code} - {response.response_message}")
+            print(f"Transaction ID: {response.transaction_id}")
+            print(f"Amount: ${self.get_context_data()['total_price']}")
+            
+            if response.response_code == '00':  # Success
+                # Save the agreement and signature
+                compliance_request.agrees_to_terms_digital_signature = form.cleaned_data['agrees_to_terms_digital_signature']
+                compliance_request.client_signature_text = form.cleaned_data['client_signature_text']
+                compliance_request.status = 'COMPLETED'
+                compliance_request.save()
+                
+                # Update all related compliance requests
+                request_ids = self.request.session.get('compliance_request_ids', [])
+                ComplianceRequest.objects.filter(id__in=request_ids).update(status='PAID')
+                
+                # Store payment information in session
+                self.request.session['payment_info'] = {
+                    'user_email': self.request.user.email if self.request.user.is_authenticated else 'guest@example.com',
+                    'order_reference': f"ORD-{compliance_request.id}-{int(time.time())}",
+                    'amount': str(total_price),
+                    'service_type': compliance_request.get_request_type_display(),
+                    'business_name': compliance_request.business.name,
+                    'transaction_id': response.transaction_id,
+                    'payment_status': 'success',
+                    'payment_message': response.response_message
+                }
+                
+                logger.info(f"Payment successful for compliance request {request_id}")
+                return redirect('core:payment_confirmation', request_id=request_id)
+            else:
+                error_message = f"Payment failed: {response.response_message}"
+                logger.error(error_message)
+                messages.error(self.request, error_message)
+                return self.form_invalid(form)
+                
+        except Exception as e:
+            error_message = f"Payment processing error: {str(e)}"
+            logger.error(error_message)
+            messages.error(self.request, error_message)
+            return self.form_invalid(form)
 
 class PaymentConfirmationView(TemplateView):
     template_name = 'core/payment_confirmation.html'
@@ -351,13 +397,12 @@ class PaymentConfirmationView(TemplateView):
         subtotal += sum(request.price or Decimal('0') for request in individual_services)
         
         # Calculate discount if all services are selected
-        discount = Decimal('0')
+        discount = Decimal('49.90')
+        total_price = Decimal('0')
         if compliance_request.business.business_type in ['CORP', 'LLC']:
             all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if compliance_request.business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
             if all(any(r.request_type == s or (s == 'LABOR_LAW_POSTER_CERT' and (r.request_type == 'LABOR_LAW_POSTER' or r.request_type == 'CERTIFICATE_EXISTENCE')) for r in pending_requests) for s in all_services):
-                discount = subtotal * Decimal('0.1')  # 10% discount
-        
-        total_price = subtotal - discount
+                total_price = subtotal - discount
         
         context.update({
             'user_email': payment_info.get('user_email'),
@@ -389,7 +434,7 @@ class ServiceFormView(FormView):
         # Map request types to form classes
         form_map = {
             'OPERATING_AGREEMENT': OperatingAgreementForm,
-            'CORPORATE_BYLAWS': OperatingAgreementForm,  # Using OperatingAgreementForm for now, should be replaced with CorporateBylawsForm
+            'CORPORATE_BYLAWS': CorporateBylawsForm,
             'FEDERAL_EIN': FederalEINForm,
             'LABOR_LAW_POSTER': LaborLawPosterForm,
             'CERTIFICATE_EXISTENCE': CertificateExistenceForm,

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Business, ComplianceRequest
+from .models import Business, ComplianceRequest, CorporateBylawsRequest
 
 class BusinessSearchForm(forms.Form):
     search_query = forms.CharField(
@@ -351,7 +351,7 @@ class OperatingAgreementForm(forms.ModelForm):
             'rows': 3,
             'placeholder': 'Describe profit distribution method'
         })
-    )
+            )
 
     class Meta:
         model = ComplianceRequest
@@ -530,17 +530,6 @@ class FederalEINForm(forms.ModelForm):
         label="Please specify your primary business activity"
     )
 
-    # Section 6: Agreements
-    agrees_to_terms_digital_signature = forms.BooleanField(
-        required=True, # This must be checked
-        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        label="With my digital signature, (i) I represent and warrant that all of the information provided above is accurate and complete; (ii) I agree that I have carefully read and agree to be bound by the Terms of Service, Refund Policy, and Privacy Policy (see below) and (iii) I have read and understand that I am hereby authorizing [Your Company Name] as a \"Third Party Designee\" as described in the instructions to Form SS-4 to apply to the IRS for the Employer Identification Number of the person or entity listed above, answer any questions on my behalf or the behalf of the entity listed above about the completion of Form SS-4, and to receive and deliver to me the Employer Identification Number for me or the entity listed above."
-    ) # Remember to replace [Your Company Name]
-    client_signature_text = forms.CharField(
-        max_length=255,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Type your full name as a digital signature'}),
-        label="Client Agreement & Signature"
-    )
 
     class Meta:
         model = ComplianceRequest
@@ -557,7 +546,6 @@ class FederalEINForm(forms.ModelForm):
             'business_start_date', 'reason_for_ein', 'other_reason_text',
             'owns_highway_vehicle_55k_lbs', 'involves_gambling_wagering', 'needs_to_file_form_720', 'sells_alcohol_tobacco_firearms', 'expects_employees_w2_next_12_months',
             'primary_business_activity', 'other_business_activity',
-            'agrees_to_terms_digital_signature', 'client_signature_text'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -567,7 +555,6 @@ class FederalEINForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             # Core fields that are always required or have their requirement handled by initial visibility
             always_required_fields = [
-                'agrees_to_terms_digital_signature', 'client_signature_text', 
                 'ein_legal_structure', 
                 'rp_first_name', 'rp_last_name', 'rp_ssn_itin', 'rp_ssn_itin_type',
                 'business_start_date', 'reason_for_ein'
@@ -623,9 +610,6 @@ class FederalEINForm(forms.ModelForm):
                 field.label = "County where LLC is located"
             if field_name == 'llc_state_of_organization':
                 field.label = "State/Territory where articles of organization are (or will be) filed"
-            if field_name == 'client_signature_text':
-                field.label = "Client Agreement & Signature"
-                field.help_text = "Sign your name here"
 
             # Add placeholders if not already set via widget attrs
             placeholders = {
@@ -651,13 +635,11 @@ class FederalEINForm(forms.ModelForm):
                 'llc_legal_name_match_articles': 'Legal Name of LLC',
                 'llc_trade_name': 'Trade Name/Doing business as',
                 'llc_county_location': 'County',
-                'client_signature_text': 'Type full name'
             }
             if field_name in placeholders and not field.widget.attrs.get('placeholder'):
                 field.widget.attrs['placeholder'] = placeholders[field_name]
 
 class LaborLawPosterForm(forms.ModelForm):
-    # Applicant Information
     first_name = forms.CharField(
         max_length=100,
         widget=forms.TextInput(attrs={
@@ -691,6 +673,7 @@ class LaborLawPosterForm(forms.ModelForm):
     )
     reference_number = forms.CharField(
         max_length=100,
+        required=True,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Reference Number'
@@ -707,29 +690,13 @@ class LaborLawPosterForm(forms.ModelForm):
         label="Complete Business Name"
     )
 
-    # Agreement and Signature
-    agrees_to_terms = forms.BooleanField(
-        required=True,
-        widget=forms.CheckboxInput(attrs={
-            'class': 'form-check-input'
-        }),
-        label="I've read and accept the terms and conditions."
-    )
-    client_signature = forms.CharField(
-        max_length=255,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Type your full name as a digital signature'
-        }),
-        label="Client Agreement & Signature"
-    )
 
     class Meta:
         model = ComplianceRequest
         fields = [
             'first_name', 'last_name', 'email', 'phone_number',
             'reference_number', 'business_name',
-            'agrees_to_terms', 'client_signature'
+            'agrees_to_terms_digital_signature', 'client_signature_text'
         ]
 
 class CertificateExistenceForm(forms.ModelForm):
@@ -800,28 +767,107 @@ class CertificateExistenceForm(forms.ModelForm):
         })
     )
 
-    # Agreement and Signature
-    agrees_to_terms = forms.BooleanField(
-        required=True,
-        widget=forms.CheckboxInput(attrs={
-            'class': 'form-check-input'
-        }),
-        label="I've read and accept the terms and conditions."
-    )
-    client_signature = forms.CharField(
-        max_length=255,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Type your full name as a digital signature'
-        }),
-        label="Client Agreement & Signature"
-    )
-
     class Meta:
         model = ComplianceRequest
         fields = [
             'requester_name', 'requester_address', 'requester_phone',
             'business_name', 'file_number',
             'purpose', 'additional_requirements',
-            'agrees_to_terms', 'client_signature'
         ] 
+
+class PaymentForm(forms.Form):
+    agrees_to_terms_digital_signature = forms.BooleanField(
+        required=True,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+            'id': 'agrees_to_terms_digital_signature'
+        }),
+        label="I agree to the terms and conditions",
+        initial=False
+    )
+    client_signature_text = forms.CharField(
+        max_length=255,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Type your full name to sign'
+        }),
+        label="Digital Signature",
+        help_text="Type your full name to sign this agreement"
+    )
+
+    def save_to_compliance_request(self, compliance_request):
+        """Save the agreement and signature to the compliance request"""
+        if self.is_valid():
+            compliance_request.agrees_to_terms_digital_signature = self.cleaned_data['agrees_to_terms_digital_signature']
+            compliance_request.client_signature_text = self.cleaned_data['client_signature_text']
+            compliance_request.save()
+            return True
+        return False
+
+    class Meta:
+        model = ComplianceRequest
+        fields = [
+            'agrees_to_terms_digital_signature', 'client_signature_text'
+        ]
+
+class CorporateBylawsForm(forms.ModelForm):
+    corporate_officers = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Enter each officer\'s name and title on a new line (e.g., "John Smith, President")'
+        }),
+        help_text='Enter each officer\'s name and title on a new line'
+    )
+    
+    board_of_directors = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'rows': 3,
+            'placeholder': 'Enter each director\'s name and position on a new line'
+        }),
+        help_text='Enter each director\'s name and position on a new line'
+    )
+    
+    authorized_shares = forms.IntegerField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter total number of authorized shares'
+        }),
+        min_value=1,
+        help_text='Total number of authorized shares'
+    )
+    
+    par_value_per_share = forms.DecimalField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter par value per share (e.g., 0.01)'
+        }),
+        max_digits=10,
+        decimal_places=4,
+        min_value=0,
+        help_text='Par value per share (e.g., 0.01 for $0.01)'
+    )
+
+    class Meta:
+        model = CorporateBylawsRequest
+        fields = [
+            'corporate_officers',
+            'board_of_directors',
+            'authorized_shares',
+            'par_value_per_share'
+        ]
+
+    def clean_corporate_officers(self):
+        officers = self.cleaned_data.get('corporate_officers')
+        if not officers:
+            raise forms.ValidationError('Please enter at least one corporate officer.')
+        return officers
+
+    def clean_board_of_directors(self):
+        directors = self.cleaned_data.get('board_of_directors')
+        if not directors:
+            raise forms.ValidationError('Please enter at least one board member.')
+        return directors
+
