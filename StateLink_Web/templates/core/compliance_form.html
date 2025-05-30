@@ -266,6 +266,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                {% if business.business_type == 'CORP' %}
                 <div id="CORPORATE_BYLAWSContent" class="service-content d-none">
                     <h4>The Legal Importance of Corporate Bylaws in North Carolina</h4>
                     <p>In North Carolina you are legally expected to adopt them. Bylaws are the internal rules that govern how your corporation operates, including how decisions are made, how officers are appointed, and how shares are handled. Without them, your business is vulnerable to legal disputes, internal confusion, and compliance issues.</p>
@@ -277,7 +278,9 @@
                         <li><strong>Credibility:</strong> Banks, investors, and even vendors often ask for a copy of your bylaws before doing business. Without them, you appear disorganized and untrustworthy.</li>
                     </ul>
                 </div>
+                {% endif %}
 
+                {% if business.business_type == 'LLC' %}
                 <div id="OPERATING_AGREEMENTContent" class="service-content d-none">
                     <h4>The Legal Importance of an Operating Agreement in North Carolina</h4>
                     <p>In North Carolina, not having an Operating Agreement is a major legal risk. Without a written Operating Agreement, your LLC is automatically governed by default state laws. These laws are broad, generic, and may not reflect how you actually want your business to operate. Worse, they offer no protection in internal disputes, and courts may even question the legitimacy of your LLC if there's no formal agreement in place.</p>
@@ -289,6 +292,7 @@
                         <li><strong>Banking & Compliance:</strong> Most banks require an Operating Agreement to open a business account. You'll also need one to show investors or lenders that your business is legally sound.</li>
                     </ul>
                 </div>
+                {% endif %}
 
                 <div id="FEDERAL_EINContent" class="service-content d-none">
                     <h4>Why You Need an Employer Identification Number (EIN)</h4>

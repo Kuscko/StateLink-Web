@@ -59,103 +59,57 @@ class ComplianceRequestView(FormView):
     template_name = 'core/compliance_form.html'
     form_class = ComplianceRequestForm
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        business_id = self.kwargs.get('business_id')
-        business = get_object_or_404(Business, id=business_id)
-        
-        # Update service choices based on business type
-        if business.business_type == 'CORP':
-            form.fields['services'].choices = [
-                ('CORPORATE_BYLAWS', 'Corporate Bylaws - $249.95'),
-                ('FEDERAL_EIN', 'Federal EIN Application - $149.95'),
-                ('LABOR_LAW_POSTER_CERT', 'Labor Law Poster & Certificate of Existence - $149.95'),
-            ]
-        elif business.business_type == 'LLC':
-            form.fields['services'].choices = [
-                ('OPERATING_AGREEMENT', 'Operating Agreement - $249.95'),
-                ('FEDERAL_EIN', 'Federal EIN Application - $149.95'),
-                ('LABOR_LAW_POSTER_CERT', 'Labor Law Poster & Certificate of Existence - $149.95'),
-            ]
-        else:
-            form.fields['services'].choices = [
-                ('FEDERAL_EIN', 'Federal EIN Application - $149.95'),
-                ('LABOR_LAW_POSTER_CERT', 'Labor Law Poster & Certificate of Existence - $149.95'),
-            ]
-        
-        return form
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         business_id = self.kwargs.get('business_id')
-        business = get_object_or_404(Business, id=business_id)
+        business = get_object_or_404(Business, reference_id=business_id)
         context['business'] = business
         
-        # Calculate initial prices
-        prices = {
-            'CORPORATE_BYLAWS': Decimal('249.95'),
-            'OPERATING_AGREEMENT': Decimal('249.95'),
-            'FEDERAL_EIN': Decimal('149.95'),
-            'LABOR_LAW_POSTER_CERT': Decimal('149.95'),
-        }
+        # Define available services based on business type
+        if business.business_type == 'LLC':
+            available_services = [
+                ('OPERATING_AGREEMENT', 'Operating Agreement ($249.95)'),
+                ('FEDERAL_EIN', 'Federal EIN Application ($149.95)'),
+                ('LABOR_LAW_POSTER_CERT', 'Labor Law Posters & Certificate of Existence ($149.95)'),
+            ]
+        elif business.business_type == 'CORP':
+            available_services = [
+                ('CORPORATE_BYLAWS', 'Corporate Bylaws ($249.95)'),
+                ('FEDERAL_EIN', 'Federal EIN Application ($149.95)'),
+                ('LABOR_LAW_POSTER_CERT', 'Labor Law Posters & Certificate of Existence ($149.95)'),
+            ]
+        else:
+            available_services = [
+                ('FEDERAL_EIN', 'Federal EIN Application ($149.95)'),
+                ('LABOR_LAW_POSTER_CERT', 'Labor Law Posters & Certificate of Existence ($149.95)'),
+            ]
         
-        # Get selected services from form data
-        selected_services = self.request.POST.getlist('services', [])
-        if not selected_services and self.request.method == 'GET':
-            selected_services = self.request.GET.getlist('services', [])
+        # Update form's service choices
+        self.form_class.base_fields['services'].choices = available_services
+        context['form'] = self.get_form()
         
-        # Calculate subtotal
-        subtotal = sum(prices.get(service, Decimal('0')) for service in selected_services)
-        
-        # Calculate discount if all services are selected
-        discount = Decimal('49.90')
-        total = subtotal
-        if business.business_type in ['CORP', 'LLC']:
-            all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
-            if all(service in selected_services for service in all_services):
-                total = subtotal - discount
-        
-        context.update({
-            'subtotal': subtotal,
-            'discount': discount,
-            'total': total,
-            'show_discount': discount > 0,
-        })
-        
-        # Add duplicate_services to context if present
-        if hasattr(self, 'duplicate_services'):
-            context['duplicate_services'] = self.duplicate_services
-            
         return context
 
     def form_valid(self, form):
         business_id = self.kwargs.get('business_id')
-        business = get_object_or_404(Business, id=business_id)
-        services = form.cleaned_data['services']
-        existing_types = set(ComplianceRequest.objects.filter(
-            business=business, 
-            status__in=['PENDING', 'PAYMENT_PENDING']
-        ).values_list('request_type', flat=True))
-        compliance_requests = []
-        duplicate_services = []
-        
-        # Calculate prices for selected services
+        business = get_object_or_404(Business, reference_id=business_id)
+        services = form.cleaned_data.get('services', [])
         prices = {
-            'CORPORATE_BYLAWS': Decimal('249.95'),
             'OPERATING_AGREEMENT': Decimal('249.95'),
+            'CORPORATE_BYLAWS': Decimal('249.95'),
             'FEDERAL_EIN': Decimal('149.95'),
-            'LABOR_LAW_POSTER_CERT': Decimal('149.95'),
+            'LABOR_LAW_POSTER': Decimal('74.98'),
+            'CERTIFICATE_EXISTENCE': Decimal('74.98'),
         }
         
-        subtotal = sum(prices.get(service, Decimal('0')) for service in services)
+        # Get existing service types for this business
+        existing_types = set(ComplianceRequest.objects.filter(
+            business=business
+        ).values_list('request_type', flat=True))
         
-        # Calculate discount if all services are selected
-        discount = Decimal('49.90')
+        compliance_requests = []
+        duplicate_services = []
         total = Decimal('0')
-        if business.business_type in ['CORP', 'LLC']:
-            all_services = ['CORPORATE_BYLAWS', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT'] if business.business_type == 'CORP' else ['OPERATING_AGREEMENT', 'FEDERAL_EIN', 'LABOR_LAW_POSTER_CERT']
-            if all(service in services for service in all_services):
-                total = subtotal - discount
         
         for service in services:
             if service == 'LABOR_LAW_POSTER_CERT':
