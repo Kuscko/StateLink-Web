@@ -88,8 +88,13 @@ class CorporateBylawsRequestInline(admin.StackedInline):
     model = CorporateBylawsRequest
     extra = 0
     fieldsets = (
-        ('Bylaws Details', {
-            'fields': ('member_names',)
+        ('Corporate Structure', {
+            'fields': (
+                'corporate_officers',
+                'board_of_directors',
+                'authorized_shares',
+                'par_value_per_share'
+            )
         }),
     )
 
@@ -134,9 +139,9 @@ class LaborLawPosterRequestInline(admin.StackedInline):
 
 @admin.register(ComplianceRequest)
 class ComplianceRequestAdmin(admin.ModelAdmin):
-    list_display = ('business', 'request_type', 'status', 'price', 'created_at')
+    list_display = ('business', 'request_type', 'status', 'price', 'order_reference_number', 'created_at')
     list_filter = ('request_type', 'status')
-    search_fields = ('business__name', 'business__reference_id', 'applicant_first_name', 'applicant_last_name')
+    search_fields = ('business__name', 'business__reference_id', 'applicant_first_name', 'applicant_last_name', 'order_reference_number')
     readonly_fields = ('created_at', 'updated_at')
     inlines = [
         OperatingAgreementRequestInline,
@@ -147,7 +152,7 @@ class ComplianceRequestAdmin(admin.ModelAdmin):
     ]
     fieldsets = (
         ('Basic Information', {
-            'fields': ('business', 'request_type', 'status', 'price')
+            'fields': ('business', 'request_type', 'status', 'price', 'order_reference_number')
         }),
         ('Applicant Information', {
             'fields': (
@@ -185,8 +190,8 @@ class OperatingAgreementRequestAdmin(admin.ModelAdmin):
 
 @admin.register(CorporateBylawsRequest)
 class CorporateBylawsRequestAdmin(admin.ModelAdmin):
-    list_display = ('compliance_request', 'member_names')
-    search_fields = ('member_names',)
+    list_display = ('compliance_request', 'corporate_officers', 'board_of_directors', 'authorized_shares', 'par_value_per_share')
+    search_fields = ('compliance_request__business__name', 'compliance_request__business__reference_id')
     fieldsets = CorporateBylawsRequestInline.fieldsets
 
 @admin.register(CertificateExistenceRequest)

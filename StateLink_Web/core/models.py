@@ -255,15 +255,11 @@ class CorporateBylawsRequest(models.Model):
 
     compliance_request = models.OneToOneField('ComplianceRequest', on_delete=models.CASCADE, related_name='corporate_bylaws_request', null=True, blank=True)
 
-    requestor_first_name = models.CharField(max_length=100, blank=True, null=True)
-    requestor_last_name = models.CharField(max_length=100, blank=True, null=True)
-    requestor_email = models.EmailField(max_length=254, blank=True, null=True)
-    requestor_phone_number = models.CharField(max_length=20, blank=True, null=True)
-    business_reference_id = models.CharField(max_length=100, blank=True, null=True)
-    business_name = models.CharField(max_length=255, blank=True, null=True)
-    purpose_of_request = models.CharField(choices=PURPOSE_OF_REQUEST_CHOICES, max_length=255, blank=True, null=True)
-    other_reason_text = models.CharField(max_length=255, blank=True, null=True)
-    member_names = models.TextField(blank=True, null=True)
+    # Corporate Structure
+    corporate_officers = models.TextField(help_text='List of corporate officers with their titles', blank=True, null=True)
+    board_of_directors = models.TextField(help_text='List of board members with their positions', blank=True, null=True)
+    authorized_shares = models.IntegerField(help_text='Total number of authorized shares', blank=True, null=True)
+    par_value_per_share = models.DecimalField(max_digits=10, decimal_places=4, help_text='Par value per share', blank=True, null=True)
 
     def __str__(self):
         return f"Corporate Bylaws Request for {self.compliance_request.business.name if self.compliance_request else 'No Business'}"
@@ -351,6 +347,7 @@ class ComplianceRequest(models.Model):
     # Agreements and Signature
     agrees_to_terms_digital_signature = models.BooleanField(null=True, blank=True, verbose_name="Agrees to terms and conditions (digital signature representation)")
     client_signature_text = models.CharField(max_length=255, blank=True, null=True, verbose_name="Client Agreement Signature (typed name)")
+    order_reference_number = models.CharField(max_length=100, blank=True, null=True, verbose_name="Order Reference Number")
     
     def save(self, *args, **kwargs):
         # Set the price based on request type when saving

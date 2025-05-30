@@ -889,3 +889,9 @@ class CorporateBylawsForm(forms.ModelForm):
             raise forms.ValidationError('Please enter at least one board member.')
         return directors
 
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if commit:
+            instance.save()
+        return instance
+

@@ -303,6 +303,7 @@ class PaymentView(FormView):
                 compliance_request.client_signature_text = form.cleaned_data['client_signature_text']
                 compliance_request.status = 'PAID'
                 compliance_request.price = total_price  # Save the total price
+                compliance_request.order_reference_number = self.request.session.get('order_reference')  # Save the order reference
                 compliance_request.save()
                 
                 # Store payment information in session
@@ -583,8 +584,14 @@ class ServiceFormView(FormView):
                 service_request.save()
         
         elif compliance_request.request_type == 'CORPORATE_BYLAWS':
-            model_fields = [f.name for f in CorporateBylawsRequest._meta.get_fields()]
-            filtered_data = {k: v for k, v in form.cleaned_data.items() if k in model_fields}
+            # Filter only the corporate structure fields
+            filtered_data = {
+                'corporate_officers': form.cleaned_data.get('corporate_officers'),
+                'board_of_directors': form.cleaned_data.get('board_of_directors'),
+                'authorized_shares': form.cleaned_data.get('authorized_shares'),
+                'par_value_per_share': form.cleaned_data.get('par_value_per_share'),
+            }
+            
             service_request, created = CorporateBylawsRequest.objects.get_or_create(
                 compliance_request=compliance_request,
                 defaults=filtered_data
