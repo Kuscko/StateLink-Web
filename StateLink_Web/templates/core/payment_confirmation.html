@@ -44,16 +44,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for service in bundled_services %}
+                                {% for service in service_requests %}
                                 <tr>
                                     <td>{{ service.name }}</td>
                                     <td class="text-end">${{ service.price }}</td>
-                                </tr>
-                                {% endfor %}
-                                {% for request in individual_services %}
-                                <tr>
-                                    <td>{{ request.get_request_type_display }}</td>
-                                    <td class="text-end">${{ request.price }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

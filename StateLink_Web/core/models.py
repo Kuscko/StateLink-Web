@@ -361,17 +361,5 @@ class ComplianceRequest(models.Model):
     def __str__(self):
         return f"{self.business.name} - {self.get_request_type_display()} Request"
 
-    def get_total_price(self):
-        """Calculate total price of all associated service requests"""
-        total = self.price or Decimal('0')
-        if hasattr(self, 'federal_ein_request'):
-            total += self.SERVICE_PRICES['FEDERAL_EIN']
-        if hasattr(self, 'operating_agreement_request'):
-            total += self.SERVICE_PRICES['OPERATING_AGREEMENT']
-        if hasattr(self, 'corporate_bylaws_request'):
-            total += self.SERVICE_PRICES['CORPORATE_BYLAWS']  # Using same price as operating agreement
-        if hasattr(self, 'certificate_existence_request'):
-            total += self.SERVICE_PRICES['CERTIFICATE_EXISTENCE']
-        if hasattr(self, 'labor_law_poster_request'):
-            total += self.SERVICE_PRICES['LABOR_LAW_POSTER']
-        return total
+    class Meta:
+        unique_together = ('business', 'request_type')

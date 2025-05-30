@@ -134,10 +134,10 @@ class LaborLawPosterRequestInline(admin.StackedInline):
 
 @admin.register(ComplianceRequest)
 class ComplianceRequestAdmin(admin.ModelAdmin):
-    list_display = ('business', 'request_type', 'status', 'price', 'created_at', 'get_total_price')
+    list_display = ('business', 'request_type', 'status', 'price', 'created_at')
     list_filter = ('request_type', 'status')
     search_fields = ('business__name', 'business__reference_id', 'applicant_first_name', 'applicant_last_name')
-    readonly_fields = ('created_at', 'updated_at', 'get_total_price')
+    readonly_fields = ('created_at', 'updated_at')
     inlines = [
         OperatingAgreementRequestInline,
         FederalEINRequestInline,
@@ -147,7 +147,7 @@ class ComplianceRequestAdmin(admin.ModelAdmin):
     ]
     fieldsets = (
         ('Basic Information', {
-            'fields': ('business', 'request_type', 'status', 'price', 'get_total_price')
+            'fields': ('business', 'request_type', 'status', 'price')
         }),
         ('Applicant Information', {
             'fields': (
