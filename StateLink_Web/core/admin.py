@@ -55,7 +55,7 @@ class FederalEINRequestInline(admin.StackedInline):
         }),
         ('LLC Specific Details', {
             'fields': (
-                'llc_members_count', 'llc_physical_state_location',
+                'llc_physical_state_location',
                 'llc_physical_street', 'llc_physical_apt', 'llc_physical_city',
                 'llc_physical_zip', 'llc_has_different_mailing_address',
                 'llc_mail_street', 'llc_mail_apt', 'llc_mail_city',
@@ -75,15 +75,14 @@ class FederalEINRequestInline(admin.StackedInline):
 
 class OperatingAgreementRequestInline(admin.StackedInline):
     model = OperatingAgreementRequest
+    fields = [
+        'member_names',
+        'ownership_percentages',
+        'management_structure',
+        'capital_contributions',
+        'profit_distribution'
+    ]
     extra = 0
-    fieldsets = (
-        ('Agreement Details', {
-            'fields': (
-                'member_names', 'ownership_precentages', 'management_structure',
-                'captial_contributions', 'profit_distribution_method'
-            )
-        }),
-    )
 
 class CorporateBylawsRequestInline(admin.StackedInline):
     model = CorporateBylawsRequest
@@ -140,8 +139,8 @@ class ComplianceRequestAdmin(admin.ModelAdmin):
     search_fields = ('business__name', 'business__reference_id', 'applicant_first_name', 'applicant_last_name')
     readonly_fields = ('created_at', 'updated_at', 'get_total_price')
     inlines = [
-        FederalEINRequestInline,
         OperatingAgreementRequestInline,
+        FederalEINRequestInline,
         CorporateBylawsRequestInline,
         CertificateExistenceRequestInline,
         LaborLawPosterRequestInline,

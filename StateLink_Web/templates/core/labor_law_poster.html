@@ -2,28 +2,31 @@
 
 {% block service_form_fields %}
 <div class="container-fluid">
-    <h4 class="mb-3">Labor Law Poster Order</h4>
+    <h4 class="mb-3">Labor Law Poster Request</h4>
+    <p class="mb-4">Please provide the following information to request your Labor Law Posters.</p>
 
-    <!-- Applicant Information Section -->
+    <!-- Requester Information Section -->
     <div class="mb-4 p-3 border rounded">
-        <h5>Enter your information</h5>
+        <h5>Requester Information</h5>
+        <p class="text-muted small">Please provide your contact information.</p>
         
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
-                {{ form.first_name }}
-                {% if form.first_name.errors %}
+                <label for="{{ form.requestor_first_name.id_for_label }}" class="form-label">{{ form.requestor_first_name.label }}</label>
+                {{ form.requestor_first_name }}
+                {% if form.requestor_first_name.errors %}
                     <div class="invalid-feedback d-block">
-                        {% for error in form.first_name.errors %}{{ error }}{% endfor %}
+                        {% for error in form.requestor_first_name.errors %}{{ error }}{% endfor %}
                     </div>
                 {% endif %}
             </div>
+
             <div class="col-md-6 mb-3">
-                <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
-                {{ form.last_name }}
-                {% if form.last_name.errors %}
+                <label for="{{ form.requestor_last_name.id_for_label }}" class="form-label">{{ form.requestor_last_name.label }}</label>
+                {{ form.requestor_last_name }}
+                {% if form.requestor_last_name.errors %}
                     <div class="invalid-feedback d-block">
-                        {% for error in form.last_name.errors %}{{ error }}{% endfor %}
+                        {% for error in form.requestor_last_name.errors %}{{ error }}{% endfor %}
                     </div>
                 {% endif %}
             </div>
@@ -31,34 +34,41 @@
 
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
-                {{ form.email }}
-                {% if form.email.errors %}
+                <label for="{{ form.requestor_email.id_for_label }}" class="form-label">{{ form.requestor_email.label }}</label>
+                {{ form.requestor_email }}
+                {% if form.requestor_email.errors %}
                     <div class="invalid-feedback d-block">
-                        {% for error in form.email.errors %}{{ error }}{% endfor %}
+                        {% for error in form.requestor_email.errors %}{{ error }}{% endfor %}
                     </div>
                 {% endif %}
             </div>
+
             <div class="col-md-6 mb-3">
-                <label for="{{ form.phone_number.id_for_label }}" class="form-label">{{ form.phone_number.label }}</label>
-                {{ form.phone_number }}
-                {% if form.phone_number.errors %}
+                <label for="{{ form.requestor_phone_number.id_for_label }}" class="form-label">{{ form.requestor_phone_number.label }}</label>
+                {{ form.requestor_phone_number }}
+                {% if form.requestor_phone_number.errors %}
                     <div class="invalid-feedback d-block">
-                        {% for error in form.phone_number.errors %}{{ error }}{% endfor %}
+                        {% for error in form.requestor_phone_number.errors %}{{ error }}{% endfor %}
                     </div>
                 {% endif %}
             </div>
         </div>
+    </div>
 
+    <!-- Business Information Section -->
+    <div class="mb-4 p-3 border rounded">
+        <h5>Business Information</h5>
+        <p class="text-muted small">Please provide your business details.</p>
+        
         <div class="mb-3">
-            <label for="{{ form.reference_id.id_for_label }}" class="form-label">{{ form.reference_id.label }}</label>
-            {{ form.reference_id }}
-            {% if form.reference_id.help_text %}
-                <small class="form-text text-muted d-block mt-1">{{ form.reference_id.help_text }}</small>
+            <label for="{{ form.business_reference_id.id_for_label }}" class="form-label">{{ form.business_reference_id.label }}</label>
+            {{ form.business_reference_id }}
+            {% if form.business_reference_id.help_text %}
+                <small class="form-text text-muted d-block mt-1">{{ form.business_reference_id.help_text }}</small>
             {% endif %}
-            {% if form.reference_id.errors %}
+            {% if form.business_reference_id.errors %}
                 <div class="invalid-feedback d-block">
-                    {% for error in form.reference_id.errors %}{{ error }}{% endfor %}
+                    {% for error in form.business_reference_id.errors %}{{ error }}{% endfor %}
                 </div>
             {% endif %}
         </div>
@@ -75,14 +85,14 @@
     </div>
 
     <div class="alert alert-info">
-        <h5 class="alert-heading">Required Posters</h5>
-        <p class="mb-0">Based on your industry and location, you will receive the following required posters:</p>
+        <h5 class="alert-heading">Important Information</h5>
+        <p class="mb-0">Labor Law Posters are required by federal and state law to be displayed in your workplace. These posters inform employees of their rights and your responsibilities as an employer. Our service includes:</p>
         <ul class="mb-0 mt-2">
-            <li>Fair Labor Standards Act (FLSA)</li>
-            <li>Equal Employment Opportunity (EEO)</li>
-            <li>Family and Medical Leave Act (FMLA)</li>
-            <li>Occupational Safety and Health Administration (OSHA)</li>
-            <li>State-specific posters (if selected)</li>
+            <li>Federal Labor Law Posters</li>
+            <li>State-specific Labor Law Posters</li>
+            <li>Regular updates when laws change</li>
+            <li>Compliance verification</li>
+            <li>Digital copies for your records</li>
         </ul>
     </div>
 </div>

@@ -192,7 +192,6 @@ class FederalEINRequest(models.Model):
     other_reason_text = models.CharField(max_length=255, blank=True, null=True, verbose_name="Other reason for EIN, if applicable")
 
     # LLC Specific Details
-    llc_members_count = models.IntegerField(blank=True, null=True, verbose_name="Number of LLC Members")
     llc_physical_state_location = models.CharField(max_length=2, blank=True, null=True, verbose_name="State/Territory where LLC is physically located")
     llc_physical_street = models.CharField(max_length=255, blank=True, null=True, verbose_name="LLC Physical Street Address")
     llc_physical_apt = models.CharField(max_length=50, blank=True, null=True, verbose_name="LLC Physical Apt/Suite")
@@ -237,10 +236,10 @@ class OperatingAgreementRequest(models.Model):
     compliance_request = models.OneToOneField('ComplianceRequest', on_delete=models.CASCADE, related_name='operating_agreement_request', null=True, blank=True)
 
     member_names = models.TextField(blank=True, null=True)
-    ownership_precentages = models.TextField(blank=True, null=True)
-    management_structure = models.TextField(choices=MANAGEMENT_STRUCTURE_CHOICES, blank=True, null=True)
-    captial_contributions = models.TextField(blank=True, null=True)
-    profit_distribution_method = models.TextField(blank=True, null=True)
+    ownership_percentages = models.TextField(blank=True, null=True)
+    management_structure = models.CharField(choices=MANAGEMENT_STRUCTURE_CHOICES, max_length=20, blank=True, null=True)
+    capital_contributions = models.TextField(blank=True, null=True)
+    profit_distribution = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"Operating Agreement Request for {self.compliance_request.business.name if self.compliance_request else 'No Business'}"
@@ -322,6 +321,7 @@ class ComplianceRequest(models.Model):
         ('IN_PROGRESS', 'In Progress'),
         ('COMPLETED', 'Completed'),
         ('PAYMENT_PENDING', 'Payment Pending'),
+        ('PAID', 'Paid'),
     ]
 
     # Service prices mapping

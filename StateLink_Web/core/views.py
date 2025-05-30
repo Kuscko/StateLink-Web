@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.generic import TemplateView, FormView
 from decimal import Decimal
-from .models import Business, ComplianceRequest
+from .models import Business, ComplianceRequest, FederalEINRequest, OperatingAgreementRequest, CorporateBylawsRequest, LaborLawPosterRequest, CertificateExistenceRequest
 from .forms import (
     BusinessSearchForm,
     ComplianceRequestForm,
@@ -274,15 +274,16 @@ class PaymentView(FormView):
             print(f"Amount: ${self.get_context_data()['total_price']}")
             
             if response.response_code == '00':  # Success
-                # Save the agreement and signature
-                compliance_request.agrees_to_terms_digital_signature = form.cleaned_data['agrees_to_terms_digital_signature']
-                compliance_request.client_signature_text = form.cleaned_data['client_signature_text']
-                compliance_request.status = 'COMPLETED'
-                compliance_request.save()
+                # Get all related compliance requests
+                request_ids = self.request.session.get('compliance_request_ids', [])
+                pending_requests = ComplianceRequest.objects.filter(id__in=request_ids)
                 
                 # Update all related compliance requests
-                request_ids = self.request.session.get('compliance_request_ids', [])
-                ComplianceRequest.objects.filter(id__in=request_ids).update(status='PAID')
+                for request in pending_requests:
+                    request.agrees_to_terms_digital_signature = form.cleaned_data['agrees_to_terms_digital_signature']
+                    request.client_signature_text = form.cleaned_data['client_signature_text']
+                    request.status = 'PAID'
+                    request.save()
                 
                 # Store payment information in session
                 self.request.session['payment_info'] = {
@@ -449,9 +450,83 @@ class ServiceFormView(FormView):
         request_id = self.kwargs.get('request_id')
         compliance_request = get_object_or_404(ComplianceRequest, id=request_id)
         
-        # Update the existing compliance request with form data
-        for field, value in form.cleaned_data.items():
-            setattr(compliance_request, field, value)
+        # Get the model fields for the specific service request type
+        if compliance_request.request_type == 'FEDERAL_EIN':
+            # First update the parent ComplianceRequest with applicant info
+            applicant_fields = [
+                'applicant_reference_id',
+                'applicant_first_name',
+                'applicant_last_name',
+                'applicant_email',
+                'applicant_phone_number'
+            ]
+            for field in applicant_fields:
+                if field in form.cleaned_data:
+                    setattr(compliance_request, field, form.cleaned_data[field])
+            compliance_request.save()
+
+            # Then save the FederalEINRequest specific fields
+            model_fields = [f.name for f in FederalEINRequest._meta.get_fields()]
+            filtered_data = {k: v for k, v in form.cleaned_data.items() if k in model_fields}
+            service_request, created = FederalEINRequest.objects.get_or_create(
+                compliance_request=compliance_request,
+                defaults=filtered_data
+            )
+            if not created:
+                for field, value in filtered_data.items():
+                    setattr(service_request, field, value)
+                service_request.save()
+        
+        elif compliance_request.request_type == 'OPERATING_AGREEMENT':
+            model_fields = [f.name for f in OperatingAgreementRequest._meta.get_fields()]
+            filtered_data = {k: v for k, v in form.cleaned_data.items() if k in model_fields}
+            service_request, created = OperatingAgreementRequest.objects.get_or_create(
+                compliance_request=compliance_request,
+                defaults=filtered_data
+            )
+            if not created:
+                for field, value in filtered_data.items():
+                    setattr(service_request, field, value)
+                service_request.save()
+        
+        elif compliance_request.request_type == 'CORPORATE_BYLAWS':
+            model_fields = [f.name for f in CorporateBylawsRequest._meta.get_fields()]
+            filtered_data = {k: v for k, v in form.cleaned_data.items() if k in model_fields}
+            service_request, created = CorporateBylawsRequest.objects.get_or_create(
+                compliance_request=compliance_request,
+                defaults=filtered_data
+            )
+            if not created:
+                for field, value in filtered_data.items():
+                    setattr(service_request, field, value)
+                service_request.save()
+        
+        elif compliance_request.request_type == 'LABOR_LAW_POSTER':
+            model_fields = [f.name for f in LaborLawPosterRequest._meta.get_fields()]
+            filtered_data = {k: v for k, v in form.cleaned_data.items() if k in model_fields}
+            service_request, created = LaborLawPosterRequest.objects.get_or_create(
+                compliance_request=compliance_request,
+                defaults=filtered_data
+            )
+            if not created:
+                for field, value in filtered_data.items():
+                    setattr(service_request, field, value)
+                service_request.save()
+        
+        elif compliance_request.request_type == 'CERTIFICATE_EXISTENCE':
+            model_fields = [f.name for f in CertificateExistenceRequest._meta.get_fields()]
+            filtered_data = {k: v for k, v in form.cleaned_data.items() if k in model_fields}
+            service_request, created = CertificateExistenceRequest.objects.get_or_create(
+                compliance_request=compliance_request,
+                defaults=filtered_data
+            )
+            if not created:
+                for field, value in filtered_data.items():
+                    setattr(service_request, field, value)
+                service_request.save()
+        
+        # Update the compliance request status
+        compliance_request.status = 'IN_PROGRESS'
         compliance_request.save()
         
         # Get remaining requests
@@ -467,7 +542,6 @@ class ServiceFormView(FormView):
             # Store all request IDs in session for payment page
             self.request.session['compliance_request_ids'] = [cr.id for cr in ComplianceRequest.objects.filter(business=compliance_request.business)]
             return redirect('core:payment', request_id=request_id)
-        
 
 class InsuranceInfoView(TemplateView):
     template_name = 'core/insurance_info.html'

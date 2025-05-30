@@ -85,11 +85,11 @@
 
         <!-- Members Count Field (Always Visible) -->
         <div class="mb-3">
-            <label for="{{ form.sole_proprietor_members_count.id_for_label }}" class="form-label">{{ form.sole_proprietor_members_count.label }}</label>
-            {{ form.sole_proprietor_members_count }}
-            {% if form.sole_proprietor_members_count.errors %}
+            <label for="{{ form.members_count.id_for_label }}" class="form-label">{{ form.members_count.label }}</label>
+            {{ form.members_count }}
+            {% if form.members_count.errors %}
                 <div class="invalid-feedback d-block">
-                    {% for error in form.sole_proprietor_members_count.errors %}{{ error }}{% endfor %}
+                    {% for error in form.members_count.errors %}{{ error }}{% endfor %}
                 </div>
             {% endif %}
         </div>
@@ -216,12 +216,6 @@
     <!-- Section 3: LLC Details (Conditional - visibility handled by JS) -->
     <div id="llc_details_section" class="mb-4 p-3 border rounded" style="display: none;"> <!-- Initially hidden, JS will show if LLC -->
         <h5>3. Limited Liability Company (LLC) Details</h5>
-        <div class="mb-3">
-            <label for="{{ form.llc_members_count.id_for_label }}" class="form-label">{{ form.llc_members_count.label }}</label>
-            {{ form.llc_members_count }}
-            {% if form.llc_members_count.help_text %}<small class="form-text text-muted d-block mt-1">{{ form.llc_members_count.help_text }}</small>{% endif %}
-            {% if form.llc_members_count.errors %}<div class="invalid-feedback d-block">{% for error in form.llc_members_count.errors %}{{ error }}{% endfor %}</div>{% endif %}
-        </div>
 
         <h6>LLC Physical Address</h6>
         <div class="mb-3">

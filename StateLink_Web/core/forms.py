@@ -1,5 +1,5 @@
 from django import forms
-from .models import Business, ComplianceRequest, CorporateBylawsRequest
+from .models import Business, ComplianceRequest, CorporateBylawsRequest, FederalEINRequest, CertificateExistenceRequest, LaborLawPosterRequest
 
 class BusinessSearchForm(forms.Form):
     search_query = forms.CharField(
@@ -395,8 +395,18 @@ class FederalEINForm(forms.ModelForm):
     ]
     ACCOUNTING_YEAR_MONTHS = [
         ('', '- Select -'),
-        ('JAN', 'January'), ('FEB', 'February'), ('MAR', 'March'), ('APR', 'April'), ('MAY', 'May'), ('JUN', 'June'),
-        ('JUL', 'July'), ('AUG', 'August'), ('SEP', 'September'), ('OCT', 'October'), ('NOV', 'November'), ('DEC', 'December')
+        ('JANUARY', 'January'),
+        ('FEBRUARY', 'February'),
+        ('MARCH', 'March'),
+        ('APRIL', 'April'),
+        ('MAY', 'May'),
+        ('JUNE', 'June'),
+        ('JULY', 'July'),
+        ('AUGUST', 'August'),
+        ('SEPTEMBER', 'September'),
+        ('OCTOBER', 'October'),
+        ('NOVEMBER', 'November'),
+        ('DECEMBER', 'December')
     ]
     PRIMARY_BUSINESS_ACTIVITY_CHOICES = [ # This needs a comprehensive list based on IRS categories
         ('', '- Please Select -'),
@@ -433,14 +443,15 @@ class FederalEINForm(forms.ModelForm):
         label="What type of legal structure is applying for an EIN?"
     )
 
-    # New fields for Sole Proprietor and Partnership
-    sole_proprietor_members_count = forms.IntegerField(
+    # Members count field (used for all business types)
+    members_count = forms.IntegerField(
         required=False,
         min_value=1,
         widget=forms.NumberInput(attrs={'class': 'form-control'}),
-        label="Number of members with ownership stake in the LLC, including yourself"
+        label="Number of members with ownership stake in the business, including yourself"
     )
 
+    # New fields for Sole Proprietor and Partnership
     partnership_type = forms.ChoiceField(
         required=False,
         choices=[
@@ -474,7 +485,6 @@ class FederalEINForm(forms.ModelForm):
 
 
     # Section 3: LLC Details (Conditional)
-    llc_members_count = forms.IntegerField(required=False, min_value=1, widget=forms.NumberInput(attrs={'class': 'form-control'}), label="Number of members with ownership stake in the LLC, including yourself")
     llc_physical_street = forms.CharField(required=False, max_length=255, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Street Address'}))
     llc_physical_apt = forms.CharField(required=False, max_length=50, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Apt, Suite, Bldg.'}))
     llc_physical_city = forms.CharField(required=False, max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'City'}))
@@ -532,15 +542,15 @@ class FederalEINForm(forms.ModelForm):
 
 
     class Meta:
-        model = ComplianceRequest
+        model = FederalEINRequest
         fields = [
             # Applicant Info
             'applicant_reference_id', 'applicant_first_name', 'applicant_last_name', 'applicant_email', 'applicant_phone_number',
             # EIN Form Sections
             'ein_legal_structure', 
-            'sole_proprietor_members_count', 'partnership_type', 'corporation_type',
+            'members_count', 'partnership_type', 'corporation_type',
             'rp_first_name', 'rp_middle_name', 'rp_last_name', 'rp_suffix', 'rp_ssn_itin', 'rp_ssn_itin_type', 'responsible_party_title',
-            'llc_members_count', 'llc_physical_street', 'llc_physical_apt', 'llc_physical_city', 'llc_physical_state_location', 'llc_physical_zip',
+            'llc_physical_street', 'llc_physical_apt', 'llc_physical_city', 'llc_physical_state_location', 'llc_physical_zip',
             'llc_has_different_mailing_address', 'llc_mail_street', 'llc_mail_apt', 'llc_mail_city', 'llc_mail_state', 'llc_mail_zip',
             'llc_legal_name_match_articles', 'llc_trade_name', 'llc_county_location', 'llc_state_of_organization', 'llc_file_date', 'llc_accounting_year_closing_month',
             'business_start_date', 'reason_for_ein', 'other_reason_text',
@@ -588,10 +598,6 @@ class FederalEINForm(forms.ModelForm):
                 field.label = "Closing month of accounting year (most common business closing month is December)"
             if field_name == 'ein_legal_structure':
                 field.label = "What type of legal structure is applying for an EIN?"
-            if field_name == 'llc_members_count':
-                field.label = "Number of members with ownership stake in the LLC, including yourself"
-            if field_name == 'reason_for_ein': # This label is specific to LLC in the new workflow
-                field.label = "Why are you requesting an EIN?" # Will need JS to change if not LLC
             if field_name == 'llc_physical_street':
                 field.label = "Street"
             if field_name == 'llc_physical_city':
@@ -623,7 +629,6 @@ class FederalEINForm(forms.ModelForm):
                 'rp_last_name': 'Last Name',
                 'rp_ssn_itin': 'SSN or ITIN',
                 'responsible_party_title': 'Title/Position (e.g., Owner, Partner, President)',
-                'llc_members_count': 'Number of members',
                 'llc_physical_street': 'Street',
                 'llc_physical_apt': 'Apt#',
                 'llc_physical_city': 'City',
@@ -640,7 +645,7 @@ class FederalEINForm(forms.ModelForm):
                 field.widget.attrs['placeholder'] = placeholders[field_name]
 
 class LaborLawPosterForm(forms.ModelForm):
-    first_name = forms.CharField(
+    requestor_first_name = forms.CharField(
         max_length=100,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
@@ -648,7 +653,7 @@ class LaborLawPosterForm(forms.ModelForm):
         }),
         label="First Name"
     )
-    last_name = forms.CharField(
+    requestor_last_name = forms.CharField(
         max_length=100,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
@@ -656,14 +661,14 @@ class LaborLawPosterForm(forms.ModelForm):
         }),
         label="Last Name"
     )
-    email = forms.EmailField(
+    requestor_email = forms.EmailField(
         widget=forms.EmailInput(attrs={
             'class': 'form-control',
             'placeholder': 'Email'
         }),
         label="Email"
     )
-    phone_number = forms.CharField(
+    requestor_phone_number = forms.CharField(
         max_length=20,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
@@ -671,7 +676,7 @@ class LaborLawPosterForm(forms.ModelForm):
         }),
         label="Phone Number"
     )
-    reference_id = forms.CharField(
+    business_reference_id = forms.CharField(
         max_length=100,
         required=True,
         widget=forms.TextInput(attrs={
@@ -690,34 +695,39 @@ class LaborLawPosterForm(forms.ModelForm):
         label="Complete Business Name"
     )
 
-
     class Meta:
-        model = ComplianceRequest
+        model = LaborLawPosterRequest
         fields = [
-            'first_name', 'last_name', 'email', 'phone_number',
-            'reference_id', 'business_name',
-            'agrees_to_terms_digital_signature', 'client_signature_text'
+            'requestor_first_name', 'requestor_last_name', 'requestor_email', 'requestor_phone_number',
+            'business_reference_id', 'business_name'
         ]
 
 class CertificateExistenceForm(forms.ModelForm):
     # Requester Details
-    requester_name = forms.CharField(
-        max_length=200,
+    requestor_first_name = forms.CharField(
+        max_length=100,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Full Name'
+            'placeholder': 'First Name'
         }),
-        label="Full Name"
+        label="First Name"
     )
-    requester_address = forms.CharField(
-        max_length=255,
+    requestor_last_name = forms.CharField(
+        max_length=100,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Address'
+            'placeholder': 'Last Name'
         }),
-        label="Address"
+        label="Last Name"
     )
-    requester_phone = forms.CharField(
+    requestor_email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Email'
+        }),
+        label="Email"
+    )
+    requestor_phone_number = forms.CharField(
         max_length=20,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
@@ -727,8 +737,16 @@ class CertificateExistenceForm(forms.ModelForm):
     )
 
     # Business Details
+    business_reference_id = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Business Reference ID'
+        }),
+        label="Business Reference ID"
+    )
     business_name = forms.CharField(
-        max_length=200,
+        max_length=255,
         widget=forms.TextInput(attrs={
             'class': 'form-control',
             'placeholder': 'Exact Business Name'
@@ -748,17 +766,17 @@ class CertificateExistenceForm(forms.ModelForm):
     )
 
     # Purpose and Additional Requirements
-    purpose = forms.ChoiceField(
+    purpose_of_request = forms.ChoiceField(
         choices=[
-            ('BANK_ACCOUNT', 'Opening Bank Account'),
+            ('OPEN_BANKING_ACCOUNT', 'Opening Bank Account'),
             ('BUSINESS_LOAN', 'Business Loan'),
-            ('CONTRACT', 'Business Contract'),
-            ('LICENSE', 'Business License'),
-            ('OTHER', 'Other Purpose')
+            ('BUSINESS_CONTRACT', 'Business Contract'),
+            ('BUSINESS_LISCENSE', 'Business License'),
+            ('OTHER_REASON', 'Other Purpose')
         ],
         widget=forms.Select(attrs={'class': 'form-select'})
     )
-    additional_requirements = forms.CharField(
+    other_reason_text = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
             'class': 'form-control',
@@ -768,12 +786,12 @@ class CertificateExistenceForm(forms.ModelForm):
     )
 
     class Meta:
-        model = ComplianceRequest
+        model = CertificateExistenceRequest
         fields = [
-            'requester_name', 'requester_address', 'requester_phone',
-            'business_name', 'file_number',
-            'purpose', 'additional_requirements',
-        ] 
+            'requestor_first_name', 'requestor_last_name', 'requestor_email', 'requestor_phone_number',
+            'business_reference_id', 'business_name', 'file_number',
+            'purpose_of_request', 'other_reason_text',
+        ]
 
 class PaymentForm(forms.Form):
     agrees_to_terms_digital_signature = forms.BooleanField(
