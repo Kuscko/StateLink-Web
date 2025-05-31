@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+        .content {
+            margin: 20px 0;
+        }
+        .order-details {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #333;
+        }
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .service-item {
+            margin: 10px 0;
+            padding: 5px 0;
+        }
+        .total {
+            margin-top: 20px;
+            font-weight: bold;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="http://127.0.0.1:8000/static/images/NC_Logo.png" alt="StateLink Logo" style="width: 100px; height: 100px;">
+        <h2>Department of Order Fulfillment</h2>
+        <h3>Order Confirmation & Delivery Notice</h3>
+        <p>Ref: {{ order_reference }}</p>
+        <p>Date: {{ date }}</p>
+    </div>
+
+    <div class="content">
+        <p><strong>To:</strong> {{ business_name }}</p>
+        <p><strong>From:</strong> Business Compliance Org NC, Department of Order Fulfillment</p>
+        <p><strong>Subject:</strong> Confirmation of Order Receipt and Imminent Delivery</p>
+
+        <p>Dear {{ business_name }},</p>
+
+        <p>This message serves as formal acknowledgment that your recent order placed through our official platform has been successfully received and processed under the above reference number.</p>
+
+        <p>Your order is scheduled for delivery within the next 24 hours.</p>
+
+        <p>Our logistics team has confirmed that the dispatch process is underway and final preparations are being completed to ensure a timely and secure delivery to the email address provided.</p>
+
+        <div class="order-details">
+            <h3>Order Summary:</h3>
+            <ul>
+                <li>Recipient: {{ business_name }}</li>
+                <li>Order ID: {{ order_reference }}</li>
+                <li>Expected Delivery Window: Within 24 hours from the time of this notice</li>
+                <li>Delivery Method: Standard Secure Dispatch</li>
+            </ul>
+        </div>
+
+        <p>We extend our sincere appreciation for your order and your continued trust in our systems.</p>
+
+        <p>Should you have any inquiries or require assistance regarding this delivery, you may contact the Order Fulfillment Division by replying directly to this message.</p>
+
+        <p>Please retain this email as confirmation of your transaction.</p>
+    </div>
+
+    <div class="footer">
+        <p>With appreciation,</p>
+        <p>Business Compliance Org NC<br>Department of Order Fulfillment</p>
+        <p style="font-size:10px; color:#bbb; margin-top:20px;">
+            Business Compliance Organization NC is not a government agency or law firm and is not affiliated with any other federal or state organizations. Business Compliance Organization NC provides third-party application assistance services. The services offered are for informational and general guidance purposes only and do not constitute legal advice. For legal advice tailored to your specific situation, please consult with a licensed attorney. All payments include premium processing service fees. All sales are final and non-refundable.
+        </p>
+    </div>
+</body>
+</html> 

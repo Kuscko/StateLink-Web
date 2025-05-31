@@ -187,3 +187,12 @@ HEARTLAND_SERVICE_URL = os.getenv('HEARTLAND_SERVICE_URL')
 # HEARTLAND_DEVELOPER_ID = "000000"  # Replace with your developer ID
 # HEARTLAND_VERSION_NUMBER = "0000"  # Replace with your version number
 # HEARTLAND_SERVICE_URL = "https://cert.api2.heartlandportico.com"  # Use production URL in production
+
+# Email Configuration
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST='live.smtp.mailtrap.io'
+EMAIL_HOST_USER='smtp@mailtrap.io'
+EMAIL_HOST_PASSWORD='38e8303665c7c369882ccfbeffaeb567'
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+DEFAULT_FROM_EMAIL='SupplySage <hello@demomailtrap.co>'

@@ -23,6 +23,9 @@ from globalpayments.api.builders import Address
 from globalpayments.api.payment_methods import CreditCardData
 from globalpayments.api import PorticoConfig, ServicesContainer
 from django.http import Http404
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -458,8 +461,30 @@ class PaymentConfirmationView(TemplateView):
             'business_name': payment_info.get('business_name'),
             'compliance_request': compliance_request,
             'business': compliance_request.business,
-            'show_discount': show_discount
+            'show_discount': show_discount,
+            'date': timezone.now().strftime('%d-%m-%Y')
         })
+
+        # Send email receipt
+        if payment_info.get('user_email'):
+            email_context = {
+                'order_reference': payment_info.get('order_reference'),
+                'business_name': payment_info.get('business_name'),
+                'date': timezone.now().strftime('%d-%m-%Y')
+            }
+            
+            # Render email template
+            html_message = render_to_string('email_templates/payment_receipt.html', email_context)
+            
+            # Send email
+            send_mail(
+                subject=f'Order Confirmation & Delivery Notice - {payment_info.get("order_reference")}',
+                message='',  # Plain text version
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[payment_info.get('user_email')],
+                html_message=html_message,
+                fail_silently=False,
+            )
         
         # Clear payment info from session after retrieving it
         if 'payment_info' in self.request.session:
