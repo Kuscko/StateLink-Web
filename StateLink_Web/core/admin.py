@@ -139,8 +139,8 @@ class LaborLawPosterRequestInline(admin.StackedInline):
 
 @admin.register(ComplianceRequest)
 class ComplianceRequestAdmin(admin.ModelAdmin):
-    list_display = ('business', 'request_type', 'status', 'price', 'order_reference_number', 'created_at')
-    list_filter = ('request_type', 'status')
+    list_display = ('business', 'request_type', 'status', 'price', 'order_reference_number', 'created_at', 'unlimited_amendments')
+    list_filter = ('request_type', 'status', 'unlimited_amendments')
     search_fields = ('business__name', 'business__reference_id', 'applicant_first_name', 'applicant_last_name', 'order_reference_number')
     readonly_fields = ('created_at', 'updated_at')
     inlines = [
@@ -152,7 +152,7 @@ class ComplianceRequestAdmin(admin.ModelAdmin):
     ]
     fieldsets = (
         ('Basic Information', {
-            'fields': ('business', 'request_type', 'status', 'price', 'order_reference_number')
+            'fields': ('business', 'request_type', 'status', 'price', 'order_reference_number', 'unlimited_amendments')
         }),
         ('Applicant Information', {
             'fields': (

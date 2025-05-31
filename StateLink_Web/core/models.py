@@ -349,6 +349,11 @@ class ComplianceRequest(models.Model):
     client_signature_text = models.CharField(max_length=255, blank=True, null=True, verbose_name="Client Agreement Signature (typed name)")
     order_reference_number = models.CharField(max_length=100, blank=True, null=True, verbose_name="Order Reference Number")
     
+    unlimited_amendments = models.BooleanField(
+        default=False,
+        help_text="If true, the client has selected unlimited amendments add-on."
+    )
+    
     def save(self, *args, **kwargs):
         # Set the price based on request type when saving
         if not self.price:

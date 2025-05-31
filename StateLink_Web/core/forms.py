@@ -31,6 +31,12 @@ class ComplianceRequestForm(forms.ModelForm):
         help_text='Select all compliance services you need'
     )
 
+    unlimited_amendments = forms.BooleanField(
+        required=False,
+        label="Add unlimited amendments to bylaws and/or operating agreement for $39.95",
+        help_text="Optional add-on. Only available if you select Corporate Bylaws or Operating Agreement."
+    )
+
     class Meta:
         model = ComplianceRequest
         fields = []
@@ -40,6 +46,10 @@ class ComplianceRequestForm(forms.ModelForm):
         if not services:
             raise forms.ValidationError('Please select at least one service.')
         return services
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # The field is always present, but template JS will show/hide it based on service selection
 
 class BusinessRegistrationForm(forms.ModelForm):
     business_name = forms.CharField(

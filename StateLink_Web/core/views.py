@@ -113,6 +113,10 @@ class ComplianceRequestView(FormView):
         # Store the compliance request ID in session
         self.request.session['compliance_request_id'] = compliance_request.id
         
+        # Save the add-on selection
+        compliance_request.unlimited_amendments = form.cleaned_data.get('unlimited_amendments', False)
+        compliance_request.save()
+        
         # Redirect to the first service form
         if services:
             return redirect('core:service_form', request_id=compliance_request.id)
@@ -229,6 +233,10 @@ class PaymentView(FormView):
                 total_price = subtotal - discount
                 show_discount = True
 
+        # Add unlimited amendments addon if selected
+        if compliance_request.unlimited_amendments:
+            total_price += Decimal('39.95')
+
         # Store the calculated prices in the session for later use
         self.request.session['payment_calculation'] = {
             'subtotal': str(subtotal),
@@ -244,7 +252,9 @@ class PaymentView(FormView):
             'total_price': total_price,
             'show_discount': show_discount,
             'has_labor_law_poster': has_labor_law,
-            'order_reference': self.request.session.get('order_reference')
+            'order_reference': self.request.session.get('order_reference'),
+            'unlimited_amendments': compliance_request.unlimited_amendments,
+            'unlimited_amendments_price': Decimal('39.95') if compliance_request.unlimited_amendments else Decimal('0.00')
         })
         
         return context
@@ -433,6 +443,10 @@ class PaymentConfirmationView(TemplateView):
                 any(s['name'] == 'Labor Law Posters & Certificate of Existence' for s in service_requests)):
                 total_price = subtotal - discount
                 show_discount = True
+
+        # Add unlimited amendments addon if selected
+        if compliance_request.unlimited_amendments:
+            total_price += Decimal('39.95')
 
         context.update({
             'user_email': payment_info.get('user_email'),

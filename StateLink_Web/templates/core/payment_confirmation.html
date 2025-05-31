@@ -50,6 +50,12 @@
                                     <td class="text-end">${{ service.price }}</td>
                                 </tr>
                                 {% endfor %}
+                                {% if compliance_request.unlimited_amendments %}
+                                <tr>
+                                    <td>Unlimited Amendments to {% if business.business_type == 'LLC' %}Operating Agreement{% else %}Corporate Bylaws{% endif %} (Add-on)</td>
+                                    <td class="text-end">$39.95</td>
+                                </tr>
+                                {% endif %}
                             </tbody>
                             <tfoot>
                                 {% if show_discount %}
